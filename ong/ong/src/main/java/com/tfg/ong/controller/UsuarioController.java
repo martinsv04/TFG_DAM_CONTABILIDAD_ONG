@@ -21,8 +21,6 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-
-
     @GetMapping
     public ResponseEntity<List<Usuario>> getAllUsuarios() {
         List<Usuario> usuarios = usuarioService.getAllUsuarios();
