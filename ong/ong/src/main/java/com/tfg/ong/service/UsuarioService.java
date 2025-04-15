@@ -4,11 +4,12 @@ import com.tfg.ong.model.Usuario;
 import com.tfg.ong.repository.UsuarioRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
+@Primary
 @Service
 public class UsuarioService {
 
@@ -20,8 +21,8 @@ public class UsuarioService {
     }
 
     public Usuario getUsuarioById(Long id) {
-        Optional<Usuario> donante = usuarioRepository.findById(id);
-        return donante.orElse(null); // Devolver null si no existe
+        Optional<Usuario> usuario = usuarioRepository.findById(id);
+        return usuario.orElse(null); // Devolver null si no existe
     }
 
     public Usuario createUsuario(Usuario usuario) {

@@ -1,17 +1,13 @@
 package com.tfg.ong.controller;
 
-
+import com.tfg.ong.model.Usuario;
+import com.tfg.ong.service.UsuarioService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import com.tfg.ong.model.Usuario;
-import com.tfg.ong.service.UsuarioService;
-
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -22,11 +18,9 @@ public class UsuarioController {
     private UsuarioService usuarioService;
 
     @GetMapping
-    public ResponseEntity<List<Usuario>> getAllUsuarios() {
-        List<Usuario> usuarios = usuarioService.getAllUsuarios();
-        return new ResponseEntity<>(usuarios, HttpStatus.OK);
+    public List<Usuario> getAllUsuarios() {
+        return usuarioService.getAllUsuarios();
     }
-    
 
     @GetMapping("/{id}")
     public Usuario getUsuarioById(@PathVariable Long id) {
@@ -34,12 +28,8 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<Usuario> createUsuario(@RequestBody Usuario usuario) {
-        // Usamos el servicio para guardar el usuario
-        Usuario savedUsuario = usuarioService.createUsuario(usuario);
-        
-        // Devolvemos la respuesta con el estado 201 Created y el usuario guardado en el cuerpo
-        return new ResponseEntity<>(savedUsuario, HttpStatus.CREATED);
+    public Usuario createUsuario(@RequestBody Usuario usuario) {
+        return usuarioService.createUsuario(usuario);
     }
 
     @PutMapping("/{id}")
