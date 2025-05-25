@@ -1,0 +1,41 @@
+.factura-detalle-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #f4faff;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .factura-detalle-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .tabla-detalles {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .tabla-detalles th,
+  .tabla-detalles td {
+    border: 1px solid #ccc;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  .tabla-detalles th {
+    background-color: #e0f0ff;
+  }
+  
+  .descarga-pdf {
+    margin-top: 30px;
+    text-align: center;
+  }
+  
+  .descarga-pdf button {
+    margin-right: 20px;
+    padding: 10px 20px;
+  }
+  

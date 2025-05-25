@@ -1,0 +1,47 @@
+.dashboard-container {
+    padding: 40px;
+    text-align: center;
+  }
+  
+  .dashboard-ongs-section {
+    margin-top: 40px;
+  }
+  
+  .ong-card-admin {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 50px 20px 50px;
+    text-align: left;
+    background-color: #f9f9f9;
+  }
+  
+  .ong-card-user {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 60%;
+    text-align: center;
+    background-color: #f9f9f9;
+  }
+  
+  .ong-name {
+    color: blue;
+    cursor: pointer;
+  }
+  
+  .area-economica-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .area-economica-button:hover {
+    background-color: #0056b3;
+  }
+  

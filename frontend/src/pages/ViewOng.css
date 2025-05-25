@@ -1,0 +1,48 @@
+.vista-ong-container {
+    padding: 40px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: left;
+  }
+  
+  .miembros-lista {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .miembros-lista li {
+    margin-bottom: 10px;
+  }
+  
+  .main-button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .main-button:hover {
+    background-color: #0056b3;
+  }
+  
+  .small-button {
+    background-color: #6c757d;
+    color: white;
+    padding: 5px 10px;
+    margin-left: 5px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .small-button:hover {
+    background-color: #5a6268;
+  }
+  
+  .admin-actions {
+    margin-top: 30px;
+  }
+  

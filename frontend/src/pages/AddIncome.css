@@ -1,0 +1,78 @@
+.add-income-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #f5faff;
+    border-radius: 10px;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .add-income-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #007bff;
+  }
+  
+  .add-income-container form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .add-income-container label {
+    font-weight: bold;
+  }
+  
+  .add-income-container input,
+  .add-income-container select {
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  .add-income-container button {
+    padding: 12px;
+    background-color: #28a745;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .add-income-container button:hover {
+    background-color: #218838;
+  }
+
+  .factura-exito {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #cce5ff;
+    background-color: #e6f3ff;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .factura-exito p {
+    color: #155a8a;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+  
+  .factura-exito button {
+    margin: 5px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .factura-exito button:hover {
+    background-color: #0056b3;
+  }
+  
+  

@@ -1,0 +1,99 @@
+.balance-general-container {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    background-color: #f4faff;
+    border-radius: 12px;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .balance-general-container h2 {
+    text-align: center;
+    color: #007bff;
+    margin-bottom: 30px;
+  }
+  
+  .filtros-balance {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 25px;
+  }
+  
+  .filtros-balance label {
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .filtros-balance select {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: white;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .bloque {
+    background-color: white;
+    border-left: 4px solid #007bff;
+    padding: 20px;
+    margin-bottom: 25px;
+    border-radius: 8px;
+    text-align: center;
+  }
+  
+  .bloque h3 {
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .resultado-final {
+    font-size: 24px;
+  }
+  
+  .positivo {
+    color: green;
+    font-weight: bold;
+  }
+  
+  .negativo {
+    color: red;
+    font-weight: bold;
+  }
+  
+  .loading {
+    text-align: center;
+    font-size: 18px;
+    margin-top: 50px;
+  }
+
+  body {
+    background: linear-gradient(to bottom, #ffffff, #a7d8f0);
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  .acciones-balance {
+  margin-top: 30px;
+  text-align: center;
+  }
+
+  .acciones-balance button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .acciones-balance button:hover {
+    background-color: #0056b3;
+  }
+
+  
