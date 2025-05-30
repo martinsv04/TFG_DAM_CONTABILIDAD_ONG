@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
-import './EstadoResultados.css';
+import '../styles/EstadoResultados.css';
 
 const EstadoResultados = () => {
   const { id } = useParams();
@@ -30,7 +30,6 @@ const EstadoResultados = () => {
         resultadoNeto: datos.resultadoNeto
       };
 
-      // Petición al endpoint correcto del backend
       await axios.post(`http://localhost:8080/api/reportes/estado-resultados/${id}/guardar?anio=${anio}`);
 
       setMensaje('Informe guardado correctamente en la base de datos.');

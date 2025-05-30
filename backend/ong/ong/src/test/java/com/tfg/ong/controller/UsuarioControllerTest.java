@@ -132,4 +132,44 @@ public class UsuarioControllerTest {
                 .andExpect(jsonPath("$.email").value("daniel@example.com"));
     }
 
+    @Test
+    void actualizarRol_rolValido_deberiaRetornarOk() throws Exception {
+        Long userId = 1L;
+        Usuario usuario = new Usuario();
+        usuario.setId(userId);
+        usuario.setRol(Rol.VOLUNTARIO);
+
+        when(usuarioService.actualizarRol(eq(userId), eq(Rol.VOLUNTARIO))).thenReturn(usuario);
+
+        mockMvc.perform(patch("/api/usuarios/{id}/rol", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"rol\": \"VOLUNTARIO\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(userId))
+                .andExpect(jsonPath("$.rol").value("VOLUNTARIO"));
+    }
+
+    @Test
+    void actualizarRol_rolInvalido_deberiaRetornarBadRequest() throws Exception {
+        Long userId = 1L;
+
+        mockMvc.perform(patch("/api/usuarios/{id}/rol", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"rol\": \"NO_EXISTE\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void actualizarRol_usuarioNoExiste_deberiaRetornarNotFound() throws Exception {
+        Long userId = 999L;
+
+        when(usuarioService.actualizarRol(eq(userId), eq(Rol.DONANTE)))
+                .thenThrow(new RuntimeException("Usuario no encontrado"));
+
+        mockMvc.perform(patch("/api/usuarios/{id}/rol", userId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"rol\": \"DONANTE\"}"))
+                .andExpect(status().isNotFound());
+    }
+
 }

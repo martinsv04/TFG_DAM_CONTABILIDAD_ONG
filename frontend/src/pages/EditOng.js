@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import './EditOng.css';
+import '../styles/EditOng.css';
 import axios from 'axios';
 
 const EditarOng = () => {

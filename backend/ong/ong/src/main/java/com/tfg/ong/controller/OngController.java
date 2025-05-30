@@ -117,4 +117,24 @@ public class OngController {
 
     }
 
+    @GetMapping("/{id}/miembros")
+    public ResponseEntity<List<Usuario>> getMiembrosDeOng(@PathVariable Long id) {
+        Optional<Ong> ongOpt = ongRepository.findById(id);
+
+        if (ongOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Ong ong = ongOpt.get();
+
+        List<Usuario> miembros = usuarioRepository.findByOngId(id);
+
+        Usuario admin = ong.getAdmin();
+        if (admin != null && miembros.stream().noneMatch(u -> u.getId().equals(admin.getId()))) {
+            miembros.add(0, admin);
+        }
+
+        return ResponseEntity.ok(miembros);
+    }
+
 }

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -75,6 +76,22 @@ public class UsuarioController {
 
     }
 
+    @PatchMapping("/{id}/rol")
+    public ResponseEntity<Usuario> actualizarRol(@PathVariable Long id, @RequestBody Map<String, String> payload) {
+        System.out.println("Rol recibido: " + payload.get("rol"));
+
+        try {
+            System.out.println("Rol recibido: " + payload.get("rol"));
+
+            Rol nuevoRol = Rol.valueOf(payload.get("rol"));
+            Usuario actualizado = usuarioService.actualizarRol(id, nuevoRol);
+            return ResponseEntity.ok(actualizado);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(null); // rol no válido
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+    }
 
     
 }

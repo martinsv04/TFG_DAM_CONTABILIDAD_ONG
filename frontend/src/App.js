@@ -16,7 +16,7 @@ import EstadoResultados from './pages/EstadoResultados';
 import BalanceGeneral from './pages/BalanceGeneral';
 import FacturasList from './pages/Facturas';
 import FacturaDetalle from './pages/FacturaDetalle';
-
+import Donar from './pages/Donar';
 
 
 function App() {
@@ -39,6 +39,7 @@ function App() {
           <Route path="/informe/balance/:id" element={<BalanceGeneral />} />
           <Route path="/ongs/:id/facturas" element={<FacturasList />} />
           <Route path="/facturas/:id" element={<FacturaDetalle />} />
+          <Route path="/donar/:id" element={<Donar />} />
         </Routes>
       </div>
     </Router>

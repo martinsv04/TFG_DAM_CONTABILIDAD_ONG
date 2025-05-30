@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Dashboard.css';
+import '../styles/Dashboard.css';
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -53,15 +53,15 @@ const Dashboard = () => {
             </h3>
             <p>Dirección: {ong.direccion}</p>
 
-            {/* Solo si es ADMIN mostramos botón de Área Económica */}
-            {rol === 'ADMIN' && (
-              <button 
-                onClick={() => irAreaEconomica(ong.id)}
-                className="area-economica-button"
-              >
-                Área Económica
-              </button>
+            {(rol === 'ADMIN' || rol === 'CONTABLE') && (
+                <button
+                    onClick={() => irAreaEconomica(ong.id)}
+                    className="area-economica-button"
+                >
+                  Área Económica
+                </button>
             )}
+
           </div>
         ))}
       </div>

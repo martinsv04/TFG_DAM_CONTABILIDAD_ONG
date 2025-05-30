@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import './AddMember.css'; // Te paso luego CSS bonito si quieres
+import '../styles/AddMember.css'; // Te paso luego CSS bonito si quieres
 
 const AddMember = () => {
   const { id } = useParams(); // id de la ONG

@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
-import './FacturaDetalle.css';
+import '../styles/FacturaDetalle.css';
 
 const FacturaDetalle = () => {
   const { id } = useParams();

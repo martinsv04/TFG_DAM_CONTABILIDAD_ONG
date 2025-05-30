@@ -14,4 +14,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Long>{
 
     List<Usuario> findByRol(Rol rol);
 
+    List<Usuario> findByOngId(Long ongId);
+
 }

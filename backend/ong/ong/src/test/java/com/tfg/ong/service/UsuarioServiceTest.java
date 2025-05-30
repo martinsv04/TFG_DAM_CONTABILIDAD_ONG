@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 import java.util.Arrays;
@@ -86,4 +87,39 @@ public class UsuarioServiceTest {
 
         verify(usuarioRepository, times(1)).deleteById(1L);
     }
+
+    @Test
+    void testUpdateAndSaveRol() {
+        // Arrange
+        Long userId = 1L;
+        Usuario usuarioExistente = new Usuario();
+        usuarioExistente.setId(userId);
+        usuarioExistente.setRol(Rol.VOLUNTARIO);
+
+        when(usuarioRepository.findById(userId)).thenReturn(Optional.of(usuarioExistente));
+        when(usuarioRepository.save(Mockito.any(Usuario.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        // Act
+        Usuario actualizado = usuarioService.actualizarRol(userId, Rol.CONTABLE);
+
+        // Assert
+        assertEquals(Rol.CONTABLE, actualizado.getRol());
+        verify(usuarioRepository).findById(userId);
+        verify(usuarioRepository).save(usuarioExistente);
+    }
+
+    @Test
+    void actualizarRol_deberiaLanzarExcepcionSiNoExiste() {
+        Long userId = 2L;
+        when(usuarioRepository.findById(userId)).thenReturn(Optional.empty());
+
+        RuntimeException ex = assertThrows(RuntimeException.class, () -> {
+            usuarioService.actualizarRol(userId, Rol.ADMIN);
+        });
+
+        assertEquals("Usuario no encontrado", ex.getMessage());
+        verify(usuarioRepository).findById(userId);
+        verify(usuarioRepository, never()).save(any());
+    }
 }
+

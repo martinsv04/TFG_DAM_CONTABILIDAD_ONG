@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './EconomicArea.css';
+import '../styles/EconomicArea.css';
 
 const EconomicArea = () => {
   const { id } = useParams();
@@ -12,17 +12,17 @@ const EconomicArea = () => {
   const [gastos, setGastos] = useState([]);
 
   useEffect(() => {
-    // Cargar ONG
+
     axios.get(`http://localhost:8080/api/ongs/${id}`)
       .then(res => setOng(res.data))
       .catch(err => console.error('Error cargando ONG:', err));
 
-    // Cargar ingresos
+
     axios.get(`http://localhost:8080/api/ingresos/ong/${id}`)
       .then(res => setIngresos(res.data))
       .catch(err => console.error('Error cargando ingresos', err));
 
-    // Cargar gastos
+
     axios.get(`http://localhost:8080/api/gastos/ong/${id}`)
       .then(res => setGastos(res.data))
       .catch(err => console.error('Error cargando gastos', err));

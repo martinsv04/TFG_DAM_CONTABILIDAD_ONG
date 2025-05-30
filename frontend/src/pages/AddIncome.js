@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './AddIncome.css';
+import '../styles/AddIncome.css';
 
 const AddIncome = () => {
   const { id } = useParams(); // ID de la ONG

@@ -1,5 +1,6 @@
 package com.tfg.ong.service;
 
+import com.tfg.ong.model.Rol;
 import com.tfg.ong.model.Usuario;
 import com.tfg.ong.repository.UsuarioRepository;
 
@@ -34,6 +35,15 @@ public class UsuarioService {
         usuario.setId(id);
         return usuarioRepository.save(usuario);
     }
+
+    public Usuario actualizarRol(Long id, Rol nuevoRol) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        usuario.setRol(nuevoRol);
+        return usuarioRepository.save(usuario);
+    }
+
 
     public void deleteUsuario(Long id) {
         usuarioRepository.deleteById(id);

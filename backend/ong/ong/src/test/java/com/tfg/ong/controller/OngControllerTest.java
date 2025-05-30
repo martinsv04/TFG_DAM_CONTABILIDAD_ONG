@@ -9,9 +9,12 @@ import com.tfg.ong.service.OngService;
 import com.tfg.ong.repository.OngRepository;
 import com.tfg.ong.repository.UsuarioRepository;
 
+import com.tfg.ong.service.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,6 +39,9 @@ public class OngControllerTest {
 
     @MockitoBean
     private OngService ongService;
+
+    @MockitoBean
+    private UsuarioService usuarioService;
 
     @MockitoBean
     private UsuarioRepository usuarioRepository;
@@ -205,4 +212,86 @@ public class OngControllerTest {
                 .andExpect(content().json("[]"));
     }
 
+    @Test
+    void getMiembrosDeOng_deberiaRetornarMiembrosConAdmin() throws Exception {
+        Long ongId = 1L;
+
+        Usuario admin = new Usuario();
+        admin.setId(100L);
+        admin.setNombre("Admin");
+
+        Usuario miembro1 = new Usuario();
+        miembro1.setId(101L);
+        miembro1.setNombre("Miembro");
+
+        Ong ong = new Ong();
+        ong.setId(ongId);
+        ong.setAdmin(admin);
+
+        when(ongRepository.findById(ongId)).thenReturn(Optional.of(ong));
+        when(usuarioRepository.findByOngId(ongId)).thenReturn(new ArrayList<>(List.of(miembro1)));
+
+        mockMvc.perform(get("/api/ongs/{id}/miembros", ongId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(admin.getId()))
+                .andExpect(jsonPath("$[1].id").value(miembro1.getId()));
+    }
+
+
+    @Test
+    void TestGetMembersThrowsNotFound() throws Exception {
+        Long ongId = 2L;
+        when(ongRepository.findById(ongId)).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/ongs/{id}/miembros", ongId))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void getMiembrosDeOng_noDebeAgregarAdminSiYaEstaEnLaLista() throws Exception {
+        Long ongId = 1L;
+
+        Usuario admin = new Usuario();
+        admin.setId(100L);
+        admin.setNombre("Admin");
+
+        List<Usuario> miembros = new ArrayList<>();
+        miembros.add(admin);
+
+        Ong ong = new Ong();
+        ong.setId(ongId);
+        ong.setAdmin(admin);
+
+        when(ongRepository.findById(ongId)).thenReturn(Optional.of(ong));
+        when(usuarioRepository.findByOngId(ongId)).thenReturn(miembros);
+
+        mockMvc.perform(get("/api/ongs/{id}/miembros", ongId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(1))
+                .andExpect(jsonPath("$[0].id").value(admin.getId()));
+    }
+
+    @Test
+    void getMiembrosDeOng_adminEsNull() throws Exception {
+        Long ongId = 1L;
+
+        Usuario miembro1 = new Usuario();
+        miembro1.setId(101L);
+        miembro1.setNombre("Miembro");
+
+        Ong ong = new Ong();
+        ong.setId(ongId);
+        ong.setAdmin(null);
+
+        when(ongRepository.findById(ongId)).thenReturn(Optional.of(ong));
+        when(usuarioRepository.findByOngId(ongId)).thenReturn(List.of(miembro1));
+
+        mockMvc.perform(get("/api/ongs/{id}/miembros", ongId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(miembro1.getId()));
+    }
+
+
 }
+
+

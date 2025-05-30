@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Facturas.css';
+import '../styles/Facturas.css';
 
 const FacturasList = () => {
   const { id } = useParams(); // ID de la ONG
