@@ -1,0 +1,123 @@
+{
+	"info": {
+		"_postman_id": "a7d1bdc2-db37-4304-a65d-aa4f19622b0c",
+		"name": "Facturas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43919858",
+		"_collection_link": "https://martins-7257382.postman.co/workspace/Martin-S's-Workspace~b8b0918f-c20b-4532-8e27-215ef0966481/collection/43919858-a7d1bdc2-db37-4304-a65d-aa4f19622b0c?action=share&source=collection_link&creator=43919858"
+	},
+	"item": [
+		{
+			"name": "All facturas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}facturas",
+					"host": [
+						"{{url}}facturas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFacturasById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}facturas/1",
+					"host": [
+						"{{url}}facturas"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateFactura",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"numero\": \"FAC-2023-001\",\r\n  \"fecha\": \"2023-11-15\",\r\n  \"total\": 1210.50,\r\n  \"ong\": {\r\n    \"id\": 1\r\n  }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}facturas",
+					"host": [
+						"{{url}}facturas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateFactura",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": 1,\r\n  \"numero\": \"F-000127\",\r\n  \"fecha\": \"2025-06-01\",\r\n  \"total\": 150.00,\r\n  \"ong\": {\r\n    \"id\": 1\r\n  },\r\n  \"detalles\": [\r\n    {\r\n      \"id\": 10,\r\n      \"descripcion\": \"Consultoría avanzada\",\r\n      \"cantidad\": 1,\r\n      \"precio\": 100.00\r\n    },\r\n    {\r\n      \"descripcion\": \"Nuevo servicio añadido\",\r\n      \"cantidad\": 2,\r\n      \"precio\": 25.00\r\n    }\r\n  ]\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}facturas",
+					"host": [
+						"{{url}}facturas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteFactura",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}facturas/5",
+					"host": [
+						"{{url}}facturas"
+					],
+					"path": [
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetFacturasByOng",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}facturas/ong/3\n",
+					"host": [
+						"{{url}}facturas"
+					],
+					"path": [
+						"ong",
+						"3\n"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

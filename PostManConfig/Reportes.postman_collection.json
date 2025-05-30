@@ -1,0 +1,168 @@
+{
+	"info": {
+		"_postman_id": "8a773b09-8a22-4a28-a154-e69c52ad3e46",
+		"name": "Reportes",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43919858",
+		"_collection_link": "https://martins-7257382.postman.co/workspace/Martin-S's-Workspace~b8b0918f-c20b-4532-8e27-215ef0966481/collection/43919858-8a773b09-8a22-4a28-a154-e69c52ad3e46?action=share&source=collection_link&creator=43919858"
+	},
+	"item": [
+		{
+			"name": "All reportes",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}reportes",
+					"host": [
+						"{{url}}reportes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ReportesById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}reportes/estado-resultados/3?anio=2024",
+					"host": [
+						"{{url}}reportes"
+					],
+					"path": [
+						"estado-resultados",
+						"3"
+					],
+					"query": [
+						{
+							"key": "anio",
+							"value": "2024"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateBalanceGeneral",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ong\": {\r\n    \"id\": 3\r\n  },\r\n  \"tipo\": \"BALANCE_GENERAL\",\r\n  \"fechaGeneracion\": \"2024-12-31T23:59:59\",\r\n  \"contenido\": \"{ \\\"activos\\\": 1200.00, \\\"pasivos\\\": 0.0, \\\"fondosNetos\\\": 1200.00 }\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}reportes/balance-general/3/guardar?anio=2025&modo=anual&periodo=1\n",
+					"host": [
+						"{{url}}reportes"
+					],
+					"path": [
+						"balance-general",
+						"3",
+						"guardar"
+					],
+					"query": [
+						{
+							"key": "anio",
+							"value": "2025"
+						},
+						{
+							"key": "modo",
+							"value": "anual"
+						},
+						{
+							"key": "periodo",
+							"value": "1\n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateEstadosResultados",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": null,\r\n  \"tipo\": \"ESTADO_RESULTADOS\",\r\n  \"fechaGeneracion\": \"2025-05-14T18:30:00\",\r\n  \"contenido\": \"Total ingresos: 5000€, Total gastos: 2000€, Resultado neto: 3000€\",\r\n  \"ong\": {\r\n    \"id\": 3\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}reportes/estado-resultados/3/guardar?anio=2025\n",
+					"host": [
+						"{{url}}reportes"
+					],
+					"path": [
+						"estado-resultados",
+						"3",
+						"guardar"
+					],
+					"query": [
+						{
+							"key": "anio",
+							"value": "2025\n"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateReporte",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"id\": null,\r\n  \"tipo\": \"ESTADO_RESULTADOS\",\r\n  \"fechaGeneracion\": \"2025-05-14T18:30:00\",\r\n  \"contenido\": \"Total ingresos: 5000€, Total gastos: 2000€, Resultado neto: 3000€\",\r\n  \"ong\": {\r\n    \"id\": 3\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}reportes/1",
+					"host": [
+						"{{url}}reportes"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteReporte",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}reportes/1",
+					"host": [
+						"{{url}}reportes"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

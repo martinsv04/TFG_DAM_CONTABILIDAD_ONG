@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "2711f056-0db3-4c7d-9427-f1bbc28bd5e3",
+		"name": "Usuarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43919858",
+		"_collection_link": "https://martins-7257382.postman.co/workspace/Martin-S's-Workspace~b8b0918f-c20b-4532-8e27-215ef0966481/collection/43919858-2711f056-0db3-4c7d-9427-f1bbc28bd5e3?action=share&source=collection_link&creator=43919858"
+	},
+	"item": [
+		{
+			"name": "All usuarios",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}usuarios",
+					"host": [
+						"{{url}}usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombre\": \"Ana Garcíados\",\r\n  \"email\": \"anasda@ejemplo.com\",\r\n  \"password\": \"123456\",\r\n  \"rol\": \"ADMIN\",\r\n  \"telefono\": \"1232456789\",\r\n  \"nifCif\": \"123425678A\"\r\n \r\n}\r\n\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}usuarios",
+					"host": [
+						"{{url}}usuarios"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Usuario por id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}usuarios/5",
+					"host": [
+						"{{url}}usuarios"
+					],
+					"path": [
+						"5"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetByRol",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}usuarios/rol/ADMIN",
+					"host": [
+						"{{url}}usuarios"
+					],
+					"path": [
+						"rol",
+						"ADMIN"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateUsuarios",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombre\": \"Carlos\",\r\n  \"apellido\": \"Mendoza Actualizado\",\r\n  \"email\": \"carlos.mz@example.org\",\r\n  \"rol\": \"VOLUNTARIO\",\r\n  \"ong\": {\r\n    \"id\": 1\r\n  },\r\n  \"creadoEn\": \"2025-05-30\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}usuarios/1",
+					"host": [
+						"{{url}}usuarios"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteUsuario",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}usuarios/1",
+					"host": [
+						"{{url}}usuarios"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "patch user rol",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"rol\": \"VOLUNTARIO\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}usuarios/5/rol",
+					"host": [
+						"{{url}}usuarios"
+					],
+					"path": [
+						"5",
+						"rol"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,126 @@
+{
+	"info": {
+		"_postman_id": "30ab4895-29fe-43af-8bac-dcd6d0782d09",
+		"name": "Gastos",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43919858",
+		"_collection_link": "https://martins-7257382.postman.co/workspace/Martin-S's-Workspace~b8b0918f-c20b-4532-8e27-215ef0966481/collection/43919858-30ab4895-29fe-43af-8bac-dcd6d0782d09?action=share&source=collection_link&creator=43919858"
+	},
+	"item": [
+		{
+			"name": "All gastos",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}gastos",
+					"host": [
+						"{{url}}gastos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GastosById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}gastos/2",
+					"host": [
+						"{{url}}gastos"
+					],
+					"path": [
+						"2"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GastosByOng",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}gastos/ong/3\n",
+					"host": [
+						"{{url}}gastos"
+					],
+					"path": [
+						"ong",
+						"3\n"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateGasto",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"descripcion\": \"Gasto actualizado\",\r\n  \"monto\": 250.00,\r\n  \"categoria\": \"OTROS\",\r\n  \"fecha\": \"2025-06-01\",\r\n  \"ong\": {\r\n    \"id\": 1\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}gastos/1",
+					"host": [
+						"{{url}}gastos"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GastoConFactura",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"descripcion\": \"Transporte voluntarios\",\r\n  \"monto\": 45.00,\r\n  \"categoria\": \"TRANSPORTE\",\r\n  \"fecha\": \"2025-05-30\",\r\n  \"id_ong\": 1\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}gastos",
+					"host": [
+						"{{url}}gastos"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteGasto",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}gastos/7",
+					"host": [
+						"{{url}}gastos"
+					],
+					"path": [
+						"7"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

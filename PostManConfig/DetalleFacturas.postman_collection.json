@@ -1,0 +1,111 @@
+{
+	"info": {
+		"_postman_id": "f4680c56-3825-4ff2-8c97-8bdc72c56463",
+		"name": "DetalleFacturas",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43919858",
+		"_collection_link": "https://martins-7257382.postman.co/workspace/Martin-S's-Workspace~b8b0918f-c20b-4532-8e27-215ef0966481/collection/43919858-f4680c56-3825-4ff2-8c97-8bdc72c56463?action=share&source=collection_link&creator=43919858"
+	},
+	"item": [
+		{
+			"name": "All detallefacturas",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}detallefacturas",
+					"host": [
+						"{{url}}detallefacturas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DetalleFacturaById",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}detallefacturas/1",
+					"host": [
+						"{{url}}detallefacturas"
+					],
+					"path": [
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "CreateDetalleFactura",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"descripcion\": \"Servicio de diseño\",\r\n  \"cantidad\": 1,\r\n  \"precio\": 120.0,\r\n  \"facturaId\": 1\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}detallefacturas",
+					"host": [
+						"{{url}}detallefacturas"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateDetalleFactura",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"descripcion\": \"Actualizado: Consultoría\",\r\n  \"cantidad\": 3,\r\n  \"precioUnitario\": 60.0,\r\n  \"facturaId\": 1\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}detallefacturas/8",
+					"host": [
+						"{{url}}detallefacturas"
+					],
+					"path": [
+						"8"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteDetalleFactura",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}detallefacturas/8",
+					"host": [
+						"{{url}}detallefacturas"
+					],
+					"path": [
+						"8"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

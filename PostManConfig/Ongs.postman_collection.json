@@ -1,0 +1,144 @@
+{
+	"info": {
+		"_postman_id": "8db151c1-23ff-41a4-afe9-4091a1208574",
+		"name": "Ongs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43919858",
+		"_collection_link": "https://martins-7257382.postman.co/workspace/Martin-S's-Workspace~b8b0918f-c20b-4532-8e27-215ef0966481/collection/43919858-8db151c1-23ff-41a4-afe9-4091a1208574?action=share&source=collection_link&creator=43919858"
+	},
+	"item": [
+		{
+			"name": "All ongs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}ongs",
+					"host": [
+						"{{url}}ongs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Crear ong",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombre\": \"ONG Ayuda Familias\",\r\n  \"descripcion\": \"Apoyo a familias vulnerables\",\r\n  \"direccion\": \"Calle Falsa 123\",\r\n  \"telefono\": \"123456789\",\r\n  \"email\": \"esperanza@ong.org\",\r\n  \"admin\": {\r\n    \"id\": 1\r\n  }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}ongs",
+					"host": [
+						"{{url}}ongs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Ong por id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}ongs/3",
+					"host": [
+						"{{url}}ongs"
+					],
+					"path": [
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OngByAdmin",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}ongs/admin/3",
+					"host": [
+						"{{url}}ongs"
+					],
+					"path": [
+						"admin",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "OngByUser",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}ongs/usuario/3",
+					"host": [
+						"{{url}}ongs"
+					],
+					"path": [
+						"usuario",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateOng",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"nombre\": \"ONG Esperanza Actualizada\",\r\n  \"descripcion\": \"Nuevos proyectos\",\r\n  \"direccion\": \"Calle Real 456\",\r\n  \"telefono\": \"987654321\",\r\n  \"email\": \"actualizada@ong.org\"\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}ongs/4",
+					"host": [
+						"{{url}}ongs"
+					],
+					"path": [
+						"4"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteOng",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}ongs/4",
+					"host": [
+						"{{url}}ongs"
+					],
+					"path": [
+						"4"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
