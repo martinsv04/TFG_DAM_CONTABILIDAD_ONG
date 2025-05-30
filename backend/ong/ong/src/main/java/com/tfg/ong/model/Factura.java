@@ -34,7 +34,7 @@ public class Factura {
     private BigDecimal total;
 
     @OneToMany(mappedBy = "factura", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
+    @JsonManagedReference(value = "factura-detalles")
     private List<DetalleFactura> detalles;
 
     public Factura() {

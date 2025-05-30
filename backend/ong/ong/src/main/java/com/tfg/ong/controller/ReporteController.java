@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/reportes")
@@ -178,6 +179,10 @@ public class ReporteController {
         List<Ingreso> ingresos = ingresoRepository.findByOngIdAndFechaBetween(idOng, inicio, fin);
         List<Gasto> gastos = gastoRepository.findByOngIdAndFechaBetween(idOng, inicio, fin);
 
+        if (ingresos.isEmpty() && gastos.isEmpty()) {
+            return ResponseEntity.badRequest().body("No hay datos disponibles para generar el balance general.");
+        }
+
         double totalIngresos = ingresos.stream()
                 .map(i -> i.getMonto() != null ? i.getMonto().doubleValue() : 0)
                 .reduce(0.0, Double::sum);
@@ -202,7 +207,6 @@ public class ReporteController {
         reporteService.createReporte(reporte);
 
         return ResponseEntity.ok("Reporte de balance general guardado correctamente");
-
     }
 
     @PostMapping("/estado-resultados/{idOng}/guardar")
@@ -220,8 +224,8 @@ public class ReporteController {
         double totalGastos = 0;
 
         for (Ingreso ingreso : ingresos) {
-            String tipo = ingreso.getTipo() != null ? ingreso.getTipo() : OTROS;
-            double monto = ingreso.getMonto() != null ? ingreso.getMonto().doubleValue() : 0;
+            String tipo = Objects.requireNonNullElse(ingreso.getTipo(), OTROS);
+            double monto = ingreso.getMonto() == null ? 0 : ingreso.getMonto().doubleValue();
             ingresosPorTipo.put(tipo, ingresosPorTipo.getOrDefault(tipo, 0.0) + monto);
             totalIngresos += monto;
         }
@@ -252,5 +256,6 @@ public class ReporteController {
 
         return ResponseEntity.ok("Reporte de estado de resultados guardado correctamente");
     }
+
 
 }

@@ -100,7 +100,8 @@ public class GastoService {
         detalleFacturaRepository.save(detalle);
 
         return gastoGuardado;
-}
+    }
+
 
 
 }

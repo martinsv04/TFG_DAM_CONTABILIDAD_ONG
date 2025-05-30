@@ -27,13 +27,20 @@ public class FacturaService {
     }
 
     public Factura createFactura(Factura factura) {
+        if (factura.getDetalles() != null) {
+            factura.getDetalles().forEach(detalle -> detalle.setFactura(factura));
+        }
         return facturaRepository.save(factura);
     }
 
     public Factura updateFactura(Long id, Factura factura) {
         factura.setId(id);
+        if (factura.getDetalles() != null) {
+            factura.getDetalles().forEach(detalle -> detalle.setFactura(factura));
+        }
         return facturaRepository.save(factura);
     }
+
 
     public void deleteFactura(Long id) {
         facturaRepository.deleteById(id);

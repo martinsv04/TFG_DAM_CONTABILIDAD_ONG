@@ -11,7 +11,6 @@ import com.tfg.ong.repository.OngRepository;
 @Service
 public class OngService {
 
-    
     private final OngRepository ongRepository;
 
     public OngService(OngRepository ongRepository) {

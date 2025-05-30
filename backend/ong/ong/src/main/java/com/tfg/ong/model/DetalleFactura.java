@@ -18,7 +18,7 @@ public class DetalleFactura {
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_factura")
-    @JsonBackReference
+    @JsonBackReference(value = "factura-detalles")
     private Factura factura;
 
     @Column(nullable = false)
