@@ -20,29 +20,26 @@ const EstadoResultados = () => {
 
   const [mensaje, setMensaje] = useState('');
 
-const handleGuardarReporte = async () => {
-  try {
-    const contenido = {
-      ingresos: datos.ingresos,
-      gastos: datos.gastos,
-      totalIngresos: datos.totalIngresos,
-      totalGastos: datos.totalGastos,
-      resultadoNeto: datos.resultadoNeto
-    };
+  const handleGuardarReporte = async () => {
+    try {
+      const contenido = {
+        ingresos: datos.ingresos,
+        gastos: datos.gastos,
+        totalIngresos: datos.totalIngresos,
+        totalGastos: datos.totalGastos,
+        resultadoNeto: datos.resultadoNeto
+      };
 
-    await axios.post('http://localhost:8080/api/reportes', {
-      id_ong: id,
-      tipo: 'ESTADO_RESULTADOS',
-      fechaGeneracion: new Date().toISOString(),
-      contenido: JSON.stringify(contenido)
-    });
+      // Petición al endpoint correcto del backend
+      await axios.post(`http://localhost:8080/api/reportes/estado-resultados/${id}/guardar?anio=${anio}`);
 
-    setMensaje('Informe guardado correctamente en la base de datos.');
-  } catch (error) {
-    console.error('Error al guardar el reporte:', error);
-    setMensaje('Hubo un error al guardar el reporte.');
-  }
-};
+      setMensaje('Informe guardado correctamente en la base de datos.');
+    } catch (error) {
+      console.error('Error al guardar el reporte:', error);
+      setMensaje('Hubo un error al guardar el reporte.');
+    }
+  };
+
 
 
   if (!datos) return <p className="loading">Cargando informe...</p>;

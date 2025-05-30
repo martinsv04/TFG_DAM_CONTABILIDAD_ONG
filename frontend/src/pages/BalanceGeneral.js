@@ -18,21 +18,18 @@ const BalanceGeneral = () => {
   }, [id, anio, modo, periodo]);
 
   const handleGuardarReporte = () => {
-  const payload = {
-    id_ong: id,
-    tipo: 'BALANCE_GENERAL',
-    contenido: JSON.stringify(datos) // puedes usar JSON.stringify si es un objeto
+    const url = `http://localhost:8080/api/reportes/balance-general/${id}/guardar?anio=${anio}&modo=${modo}&periodo=${periodo}`;
+
+    axios.post(url)
+        .then(() => {
+          alert('Reporte guardado correctamente.');
+        })
+        .catch((err) => {
+          console.error('Error al guardar el reporte:', err);
+          alert('Error al guardar el reporte.');
+        });
   };
 
-  axios.post('http://localhost:8080/api/reportes', payload)
-    .then(() => {
-      alert('Reporte guardado correctamente.');
-    })
-    .catch((err) => {
-      console.error('Error al guardar el reporte:', err);
-      alert('Error al guardar el reporte.');
-    });
-  };
 
   const renderPeriodoSelector = () => {
     if (modo === 'mensual') {
