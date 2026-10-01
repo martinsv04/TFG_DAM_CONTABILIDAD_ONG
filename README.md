@@ -137,4 +137,4 @@ tfg_db.sql                Volcado de la base de datos de ejemplo
 
 ## 📄 Licencia
 
-Este proyecto ha sido desarrollado con fines académicos como parte del Trabajo Final de Grado del Grado en Marketing en la Universidad CEU.
+Este proyecto ha sido desarrollado con fines académicos como parte del Trabajo Final del Ciclo Formativo en Desarrollo de Aplicaciones Multiplataforma en la Universidad CEU.
