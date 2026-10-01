@@ -1,155 +1,207 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import '../styles/ViewOng.css';
+import Icon from '../components/Icons';
+import PageHeader from '../components/PageHeader';
+import { Cargando, EstadoVacio } from '../components/Estados';
+import { toast } from '../components/Toast';
+import { iniciales, formatoFecha, ETIQUETA_ROL } from '../utils/format';
+
+const ROLES = ['ADMIN', 'DONANTE', 'VOLUNTARIO', 'CONTABLE'];
+const CLASE_ROL = { ADMIN: 'badge-primary', CONTABLE: 'badge-info', DONANTE: 'badge-accent', VOLUNTARIO: 'badge-success' };
 
 const ViewOng = () => {
-    const { id } = useParams();
-    const navigate = useNavigate();
-    const [rol, setRol] = useState('');
-    const [ong, setOng] = useState(null);
-    const [miembros, setMiembros] = useState([]);
-    const [rolEditableId, setRolEditableId] = useState(null);
-    const [nuevoRol, setNuevoRol] = useState('');
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const [rol, setRol] = useState('');
+  const miId = parseInt(localStorage.getItem('userId'), 10);
+  const [ong, setOng] = useState(null);
+  const [miembros, setMiembros] = useState([]);
+  const [rolEditableId, setRolEditableId] = useState(null);
+  const [nuevoRol, setNuevoRol] = useState('');
+  const [error, setError] = useState(false);
 
-    useEffect(() => {
-        const storedRol = localStorage.getItem('rol');
-        setRol(storedRol);
+  useEffect(() => {
+    setRol(localStorage.getItem('rol'));
 
-        const fetchOng = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/api/ongs/${id}`);
-                setOng(response.data);
-            } catch (error) {
-                console.error('Error al cargar la ONG:', error);
-            }
-        };
-
-        const fetchMiembros = async () => {
-            try {
-                const response = await axios.get(`http://localhost:8080/api/ongs/${id}/miembros`);
-                setMiembros(response.data);
-            } catch (error) {
-                console.error('Error al cargar los miembros:', error);
-            }
-        };
-
-        fetchOng();
-        fetchMiembros();
-    }, [id]);
-
-    const abrirSelector = (miembro) => {
-        setRolEditableId(miembro.id);
-        setNuevoRol(miembro.rol);
+    const fetchOng = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/ongs/${id}`);
+        setOng(response.data);
+      } catch (err) {
+        console.error('Error al cargar la ONG:', err);
+        setError(true);
+      }
     };
 
-    const cambiarRol = async (idUsuario) => {
-        console.log('Enviando nuevo rol:', nuevoRol);
-        try {
-            await axios.patch(
-                `http://localhost:8080/api/usuarios/${idUsuario}/rol`,
-                { rol: nuevoRol },
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                }
-            );
-
-            // ⚠️ Aquí forzamos recarga desde el backend
-            const response = await axios.get(`http://localhost:8080/api/ongs/${id}/miembros`);
-            setMiembros(response.data);
-            setRolEditableId(null);
-        } catch (error) {
-            console.error('Error al actualizar el rol:', error);
-            alert('No se pudo actualizar el rol');
-        }
+    const fetchMiembros = async () => {
+      try {
+        const response = await axios.get(`http://localhost:8080/api/ongs/${id}/miembros`);
+        setMiembros(response.data);
+      } catch (err) {
+        console.error('Error al cargar los miembros:', err);
+      }
     };
 
-    if (!ong) return <div className="loading-text">Cargando...</div>;
+    fetchOng();
+    fetchMiembros();
+  }, [id]);
 
+  const abrirSelector = (miembro) => {
+    setRolEditableId(miembro.id);
+    setNuevoRol(miembro.rol);
+  };
+
+  const recargarMiembros = async () => {
+    const response = await axios.get(`http://localhost:8080/api/ongs/${id}/miembros`);
+    setMiembros(response.data);
+  };
+
+  const cambiarRol = async (idUsuario) => {
+    try {
+      await axios.patch(
+        `http://localhost:8080/api/usuarios/${idUsuario}/rol`,
+        { rol: nuevoRol },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+      await recargarMiembros();
+      setRolEditableId(null);
+      toast('Rol actualizado', 'success');
+    } catch (err) {
+      console.error('Error al actualizar el rol:', err);
+      toast('No se pudo actualizar el rol', 'error');
+    }
+  };
+
+  const eliminarMiembro = async (miembro) => {
+    if (!window.confirm(`¿Seguro que quieres eliminar a ${miembro.nombre}? Esta acción no se puede deshacer.`)) {
+      return;
+    }
+
+    try {
+      await axios.delete(`http://localhost:8080/api/usuarios/${miembro.id}`);
+      await recargarMiembros();
+      if (rolEditableId === miembro.id) {
+        setRolEditableId(null);
+      }
+      toast('Miembro eliminado', 'success');
+    } catch (err) {
+      console.error('Error al eliminar el miembro:', err);
+      toast('No se pudo eliminar al miembro', 'error');
+    }
+  };
+
+  if (error) {
     return (
-        <div className="vista-ong-container">
-            <h1>{ong.nombre}</h1>
-            <p><strong>Descripción:</strong> {ong.descripcion}</p>
-            <p><strong>Dirección:</strong> {ong.direccion}</p>
-            <p><strong>Teléfono:</strong> {ong.telefono}</p>
-            <p><strong>Email:</strong> {ong.email}</p>
-            <p><strong>Fecha de Creación:</strong> {ong.fechaCreacion}</p>
+      <div className="card">
+        <EstadoVacio icono="alert-circle" titulo="No se pudo cargar la ONG" texto="Puede que no tengas acceso a esta organización." />
+      </div>
+    );
+  }
+  if (!ong) return <Cargando texto="Cargando ONG..." />;
 
-            <h2>Miembros ({miembros.length})</h2>
-            <ul className="miembros-lista">
-                {miembros.map((miembro) => (
-                    <li key={miembro.id}>
-                        {miembro.nombre} - {miembro.rol}
-                        {rol === 'ADMIN' && (
-                            <span style={{ marginLeft: '10px' }}>
-                                {rolEditableId === miembro.id ? (
-                                    <>
-                                        <select
-                                            value={nuevoRol}
-                                            onChange={(e) => setNuevoRol(e.target.value)}
-                                            className="small-select"
-                                        >
-                                            <option value="ADMIN">ADMIN</option>
-                                            <option value="DONANTE">DONANTE</option>
-                                            <option value="VOLUNTARIO">VOLUNTARIO</option>
-                                            <option value="CONTABLE">CONTABLE</option>
-                                        </select>
-                                        <button
-                                            type="button"
-                                            className="small-button"
-                                            onClick={() => cambiarRol(miembro.id)}
-                                        >
-                                            Guardar
-                                        </button>
-                                        <button
-                                            type="button"
-                                            className="small-button"
-                                            onClick={() => setRolEditableId(null)}
-                                        >
-                                            Cancelar
-                                        </button>
-                                    </>
-                                ) : (
-                                    <button
-                                        type="button"
-                                        className="small-button"
-                                        onClick={() => abrirSelector(miembro)}
-                                    >
-                                        Cambiar Rol
-                                    </button>
-                                )}
-                                <button className="small-button">Eliminar</button>
-                            </span>
-                        )}
-                    </li>
-                ))}
-            </ul>
+  const esAdmin = rol === 'ADMIN';
 
-            {rol === 'ADMIN' && (
-                <div className="admin-actions">
-                    <button className="main-button" onClick={() => navigate(`/editar-ong/${ong.id}`)}>
-                        Editar ONG
-                    </button>
-                    <button className="main-button" onClick={() => navigate(`/add-member/${ong.id}`)}>
-                        Añadir Miembro
-                    </button>
-                </div>
+  return (
+    <div className="fade-in">
+      <PageHeader
+        eyebrow="Organización"
+        titulo={ong.nombre}
+        acciones={
+          <>
+            {esAdmin && (
+              <>
+                <button type="button" className="btn btn-secondary" onClick={() => navigate(`/editar-ong/${ong.id}`)}>
+                  <Icon name="edit" size={16} /> Editar ONG
+                </button>
+                <button type="button" className="btn btn-primary" onClick={() => navigate(`/add-member/${ong.id}`)}>
+                  <Icon name="user-plus" size={16} /> Añadir miembro
+                </button>
+              </>
             )}
             {rol === 'DONANTE' && (
-                <div style={{ marginTop: '20px' }}>
-                    <button
-                        className="main-button"
-                        onClick={() => navigate(`/donar/${ong.id}`)}
-                    >
-                        Donar a esta ONG
-                    </button>
-                </div>
+              <button type="button" className="btn btn-accent" onClick={() => navigate(`/donar/${ong.id}`)}>
+                <Icon name="heart" size={16} /> Donar a esta ONG
+              </button>
             )}
+          </>
+        }
+      />
 
+      <div className="ong-detalle">
+        <section className="card card-pad ong-info">
+          <h3>Sobre la organización</h3>
+          {ong.descripcion && <p className="ong-info-desc">{ong.descripcion}</p>}
 
-        </div>
+          <dl className="datos">
+            <div><dt><Icon name="map-pin" size={16} /> Dirección</dt><dd>{ong.direccion || '-'}</dd></div>
+            <div><dt><Icon name="phone" size={16} /> Teléfono</dt><dd>{ong.telefono || '-'}</dd></div>
+            <div><dt><Icon name="mail" size={16} /> Email</dt><dd>{ong.email || '-'}</dd></div>
+            <div><dt><Icon name="calendar" size={16} /> Creada el</dt><dd>{formatoFecha(ong.fechaCreacion)}</dd></div>
+          </dl>
+        </section>
 
-    );
+        <section className="card">
+          <div className="card-header">
+            <h3><Icon name="users" size={20} /> Equipo <span className="badge">{miembros.length}</span></h3>
+          </div>
+
+          {miembros.length === 0 ? (
+            <EstadoVacio icono="users" titulo="Aún no hay miembros" texto="Añade a las personas de tu equipo para que puedan colaborar." />
+          ) : (
+            <ul className="miembros">
+              {miembros.map((miembro) => (
+                <li key={miembro.id} className="miembro">
+                  <span className="avatar avatar-round">{iniciales(miembro.nombre)}</span>
+
+                  <div className="miembro-datos">
+                    <p className="miembro-nombre">{miembro.nombre}</p>
+                    <span className={`badge ${CLASE_ROL[miembro.rol] || ''}`}>{ETIQUETA_ROL[miembro.rol] || miembro.rol}</span>
+                  </div>
+
+                  {esAdmin && (
+                    <div className="miembro-acciones">
+                      {rolEditableId === miembro.id ? (
+                        <>
+                          <select
+                            value={nuevoRol}
+                            onChange={(e) => setNuevoRol(e.target.value)}
+                            className="select-inline"
+                            aria-label={`Nuevo rol de ${miembro.nombre}`}
+                          >
+                            {ROLES.map((r) => (
+                              <option key={r} value={r}>{ETIQUETA_ROL[r]}</option>
+                            ))}
+                          </select>
+                          <button type="button" className="btn btn-primary btn-sm" onClick={() => cambiarRol(miembro.id)}>
+                            Guardar
+                          </button>
+                          <button type="button" className="btn btn-ghost btn-sm" onClick={() => setRolEditableId(null)}>
+                            Cancelar
+                          </button>
+                        </>
+                      ) : (
+                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => abrirSelector(miembro)}>
+                          Cambiar rol
+                        </button>
+                      )}
+
+                      {/* No se puede eliminar al administrador de la ONG ni a uno mismo */}
+                      {miembro.id !== ong.admin?.id && miembro.id !== miId && (
+                        <button type="button" className="btn btn-danger btn-sm" onClick={() => eliminarMiembro(miembro)}>
+                          <Icon name="trash" size={15} /> Eliminar
+                        </button>
+                      )}
+                    </div>
+                  )}
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+    </div>
+  );
 };
 
 export default ViewOng;

@@ -1,40 +1,35 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import './Navbar.css';
+import { Link } from 'react-router-dom';
+import Logo from './Logo';
+import { haySesionValida } from '../services/authService';
+import '../styles/public.css';
 
+// Barra superior de las páginas públicas (inicio)
 function Navbar() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    localStorage.removeItem('rol');
-    navigate('/iniciar-sesion');
-  };
-
-  const handleBack = () => {
-    navigate(-1); // vuelve a la página anterior
-  };
+  const conSesion = haySesionValida();
 
   return (
-      <nav className="navbar">
-        <div className="navbar-logo">
-          <Link to="/">ONGestión</Link>
+    <header className="public-nav">
+      <div className="public-nav-inner">
+        <Logo />
+
+        <nav className="public-nav-links" aria-label="Secciones">
+          <a href="#funciones">Funciones</a>
+          <a href="#como-funciona">Cómo funciona</a>
+        </nav>
+
+        <div className="public-nav-actions">
+          {conSesion ? (
+            <Link to="/dashboard" className="btn btn-primary btn-sm">Ir al panel</Link>
+          ) : (
+            <>
+              <Link to="/iniciar-sesion" className="btn btn-ghost btn-sm">Iniciar sesión</Link>
+              <Link to="/registrarse" className="btn btn-primary btn-sm">Contáctanos</Link>
+            </>
+          )}
         </div>
-        <ul className="navbar-links">
-          <li><a href="#">Conócenos</a></li>
-          <li><a href="#">Ayuda</a></li>
-          <li><a href="#">Contacto</a></li>
-          <li>
-            <button onClick={handleBack} className="back-button">
-              ← Volver
-            </button>
-          </li>
-          <li>
-            <button onClick={handleLogout} className="logout-button">
-              Cerrar Sesión
-            </button>
-          </li>
-        </ul>
-      </nav>
+      </div>
+    </header>
   );
 }
 

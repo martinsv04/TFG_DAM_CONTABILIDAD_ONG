@@ -1,8 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
+import './styles/pages.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { configurarAxios } from './services/authService';
+
+// Envía el token JWT en cada petición al backend y cierra la sesión si caduca
+configurarAxios();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
