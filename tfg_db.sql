@@ -259,6 +259,28 @@ CREATE TABLE `subvenciones` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `suscripciones`
+--
+
+DROP TABLE IF EXISTS `suscripciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `suscripciones` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `cancelar_al_final` bit(1) NOT NULL,
+  `estado` varchar(255) DEFAULT NULL,
+  `ong_activa_id` bigint DEFAULT NULL,
+  `periodo_fin` date DEFAULT NULL,
+  `prueba_hasta` date NOT NULL,
+  `stripe_customer_id` varchar(255) DEFAULT NULL,
+  `stripe_subscription_id` varchar(255) DEFAULT NULL,
+  `id_usuario` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UKsuscripciones_usuario` (`id_usuario`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `usuarios`
 --
 

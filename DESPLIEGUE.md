@@ -83,6 +83,34 @@ En Render, edita la variable `CORS_ORIGINS` y pon la dirección de Vercel comple
 2. Crea la ONG, registra un ingreso, genera su factura y abre **Registro de actividad** y **Resumen por cuenta**.
 3. Cambia la contraseña del administrador en **Mi perfil**.
 
+## 8. Stripe (cobro del plan Pro)
+
+La aplicación funciona sin Stripe (todo el mundo tendría la prueba de 14 días y después el plan Básico), pero para cobrar el plan Pro hay que configurarlo. Empieza siempre en **modo de prueba** (interruptor «Modo de prueba» / *Test mode* del panel de Stripe): no mueve dinero real.
+
+1. **Cuenta:** crea una cuenta en https://stripe.com (no hace falta verificar la empresa para el modo de prueba).
+2. **Producto y precios:** en *Catálogo de productos → Añadir producto*: nombre «ONGestión Pro». Añade dos precios **recurrentes**: uno **mensual** y otro **anual** (tú decides los importes, en euros). Abre cada precio y copia su identificador (`price_...`).
+3. **Clave secreta:** en *Desarrolladores → Claves de API*, copia la **clave secreta** de prueba (`sk_test_...`).
+4. **Portal de cliente:** en *Ajustes → Facturación → Portal de cliente*, actívalo y permite cancelar la suscripción y actualizar el método de pago.
+5. **Webhook:** en *Desarrolladores → Webhooks → Añadir endpoint*:
+   - URL: `https://TU-BACKEND.onrender.com/api/stripe/webhook`
+   - Eventos: `checkout.session.completed`, `customer.subscription.created`, `customer.subscription.updated`, `customer.subscription.deleted`
+   - Al crearlo, copia el **secreto de firma** (`whsec_...`).
+6. **Variables en Render** (Environment):
+
+| Variable | Valor |
+|---|---|
+| `STRIPE_SECRET_KEY` | `sk_test_...` |
+| `STRIPE_WEBHOOK_SECRET` | `whsec_...` |
+| `STRIPE_PRICE_MENSUAL` | `price_...` del precio mensual |
+| `STRIPE_PRICE_ANUAL` | `price_...` del precio anual |
+| `FRONTEND_URL` | la dirección de Vercel, sin barra final |
+
+7. **Probar:** entra como administrador → *Plan y facturación* → Suscribirme. Paga con la tarjeta de prueba `4242 4242 4242 4242`, cualquier fecha futura y cualquier CVC. Al volver, el plan pasa a Pro en unos segundos. Después prueba «Gestionar suscripción».
+
+Para pasar a cobros reales: activa tu cuenta de Stripe con los datos y la cuenta bancaria de quien cobra, repite los pasos 2 a 5 en modo real y sustituye las claves y los `price_...` en Render. Cobrar un servicio con IVA exige estar dado de alta como autónomo o empresa.
+
+**Tablas nuevas:** el backend crea la tabla `suscripciones` solo. Si usas Supabase, vuelve a ejecutar `supabase_seguridad.sql` para activar la seguridad por filas también en esa tabla.
+
 ## Limitaciones del plan gratuito
 
 - **Render** apaga el servicio tras 15 minutos sin visitas; la siguiente visita tarda 30–60 segundos en responder. Conviene «despertarlo» unos minutos antes de una demostración.

@@ -381,3 +381,34 @@
 .factura-desglose dt { color: var(--muted); }
 .factura-desglose dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
 .factura-desglose + .factura-total { margin-top: 0.75rem; }
+
+/* Plan y facturación */
+.plan-pagina { display: grid; gap: 1.5rem; }
+.plan-estado { display: grid; gap: 0.75rem; }
+.plan-estado-cabecera { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; }
+.plan-estado .alert { margin: 0; }
+.plan-titulo { margin: 0 0 0.75rem; font-family: var(--font-display); }
+.plan-precios { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.plan-precio { position: relative; display: grid; gap: 0.75rem; }
+.plan-precio h3 { margin: 0; }
+.plan-precio-destacado { border-color: var(--primary); }
+.plan-ahorro { position: absolute; top: 1rem; right: 1rem; }
+.plan-importe { margin: 0; font-family: var(--font-display); font-size: 2rem; font-weight: 700; color: var(--ink); }
+.plan-importe small { font-size: 0.9rem; font-weight: 500; color: var(--muted); }
+.plan-nota { margin: 0.75rem 0 0; font-size: 0.875rem; }
+.plan-comparar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.plan-comparar h3 { margin: 0 0 0.75rem; }
+.plan-comparar-pro { border-color: var(--primary); background: var(--primary-50); }
+.plan-lista { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; color: var(--ink-2); }
+.plan-uso { display: grid; gap: 0.9rem; margin-top: 1rem; }
+.plan-uso-linea { display: flex; justify-content: space-between; gap: 1rem; }
+.plan-ongs { margin: 1.25rem 0 0; padding: 1rem 1.25rem; border: 1px solid var(--line); border-radius: var(--radius-sm); display: grid; gap: 0.5rem; }
+.plan-ongs legend { padding: 0 0.4rem; font-weight: 600; }
+.plan-ongs p { margin: 0; }
+.plan-ongs label { display: flex; align-items: center; gap: 0.5rem; }
+.aviso-plan { display: flex; align-items: center; flex-wrap: wrap; gap: 0.6rem; margin-bottom: 1.25rem; padding: 0.7rem 1rem; border-radius: var(--radius-sm); background: var(--accent-50); color: var(--accent-600); }
+.aviso-plan svg { flex: none; }
+.aviso-plan a { margin-left: auto; color: inherit; font-weight: 700; text-decoration: underline; }
+@media (max-width: 720px) {
+  .plan-precios, .plan-comparar { grid-template-columns: 1fr; }
+}

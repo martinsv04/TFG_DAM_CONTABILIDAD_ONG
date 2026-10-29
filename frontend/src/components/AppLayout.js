@@ -6,6 +6,7 @@ import Icon from './Icons';
 import { cerrarSesion, getRol } from '../services/authService';
 import { ETIQUETA_ROL } from '../utils/format';
 import { OngContext } from './OngContext';
+import AvisoPlan from './AvisoPlan';
 import '../styles/layout.css';
 
 // Rutas que pertenecen a una ONG concreta (el :id es el de la ONG).
@@ -88,6 +89,7 @@ function AppLayout() {
         <nav className="sidebar-nav">
           <p className="nav-section">General</p>
           <Enlace to="/dashboard" icono="home">Panel</Enlace>
+          {rol === 'ADMIN' && <Enlace to="/plan" icono="credit-card">Plan y facturación</Enlace>}
 
           {ongId && (
             <>
@@ -171,6 +173,7 @@ function AppLayout() {
         </header>
 
         <main className="content">
+          {rol === 'ADMIN' && <AvisoPlan />}
           <OngContext.Provider value={{ fijarOng }}>
             <Outlet />
           </OngContext.Provider>

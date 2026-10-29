@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from '../components/Toast';
 
 // Dirección del backend. En producción se define con la variable REACT_APP_API_URL (ver DESPLIEGUE.md).
 // Las páginas escriben las URL con la dirección local; aquí se cambian por la real antes de enviar la petición.
@@ -57,6 +58,11 @@ export const configurarAxios = () => {
     (error) => {
       const url = error.config && error.config.url ? error.config.url : '';
       const esLogin = url.endsWith('/api/auth/login');
+      // 402: el plan de la ONG no permite la operación (límite alcanzado o función del plan Pro)
+      if (error.response && error.response.status === 402) {
+        const mensaje = error.response.data && error.response.data.message;
+        toast(mensaje || 'Tu plan no permite esta operación. Revisa «Plan y facturación».', 'error');
+      }
       if (error.response && error.response.status === 401 && !esLogin) {
         cerrarSesion();
         if (window.location.pathname !== '/iniciar-sesion') {

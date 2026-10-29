@@ -1,5 +1,6 @@
 package com.tfg.ong.exception;
 
+import com.tfg.ong.exception.PlanException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -12,6 +13,14 @@ import java.util.Map;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
+
+    // El plan de la ONG no permite la operación: 402 con un mensaje que la web enseña al usuario
+    @ExceptionHandler(PlanException.class)
+    public ResponseEntity<Object> handlePlan(PlanException ex) {
+        Map<String, Object> cuerpo = errorBody(ex);
+        cuerpo.put("codigo", "PLAN");
+        return new ResponseEntity<>(cuerpo, HttpStatus.PAYMENT_REQUIRED);
+    }
 
     // Sin permisos: debe ser un 403, no un 500
     @ExceptionHandler(AccessDeniedException.class)

@@ -59,6 +59,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
                         // Formulario de contacto de la web (público)
                         .requestMatchers(HttpMethod.POST, "/api/contacto").permitAll()
+                        // Avisos de Stripe: públicos, pero el controlador solo acepta los que llevan firma válida
+                        .requestMatchers(HttpMethod.POST, "/api/stripe/webhook").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
 
                         // ONGs: cualquier usuario autenticado puede ver sus datos y miembros
@@ -68,6 +70,9 @@ public class SecurityConfig {
 
                         // Gestión de usuarios (alta, cambio de rol, borrado...): solo ADMIN
                         .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
+
+                        // Plan y facturación: solo ADMIN
+                        .requestMatchers("/api/plan/**").hasRole("ADMIN")
 
                         // Registro de actividad: solo ADMIN
                         .requestMatchers("/api/auditoria/**").hasRole("ADMIN")

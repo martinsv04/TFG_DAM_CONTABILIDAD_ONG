@@ -14,6 +14,7 @@ const RUTAS = [
   { ruta: '/dashboard', titulo: 'Panel' },
   { ruta: '/ong/:id', titulo: 'Mi ONG' },
   { ruta: '/nueva-ong', titulo: 'Nueva ONG' },
+  { ruta: '/plan', titulo: 'Plan y facturación' },
   { ruta: '/editar-ong/:id', titulo: 'Editar ONG' },
   { ruta: '/add-member/:id', titulo: 'Añadir miembro' },
   { ruta: '/area-economica/:id', titulo: 'Área económica' },
