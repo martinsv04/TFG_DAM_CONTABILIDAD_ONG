@@ -4,6 +4,7 @@ import com.tfg.ong.security.AuthUser;
 import com.tfg.ong.security.OngAccessService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.access.AccessDeniedException;
+import com.tfg.ong.model.AreaGasto;
 import com.tfg.ong.model.Categoria;
 import com.tfg.ong.model.Gasto;
 import com.tfg.ong.model.Ong;
@@ -112,6 +113,15 @@ public class GastoController {
             gasto.setOng(ong);
             if (payload.get("cuenta") != null) {
                 gasto.setCuenta(payload.get("cuenta").toString());
+            }
+
+            // Área del gasto (misión, administración o captación de fondos), opcional
+            if (payload.get("area") != null && !payload.get("area").toString().isBlank()) {
+                try {
+                    gasto.setArea(AreaGasto.valueOf(payload.get("area").toString().trim().toUpperCase()));
+                } catch (IllegalArgumentException e) {
+                    throw new IllegalArgumentException("El área del gasto no es válida");
+                }
             }
 
             // Proyecto opcional; se comprueba que sea de esta ONG al guardar

@@ -125,6 +125,16 @@ public class IngresoController {
                 ingreso.setCuenta(payload.get("cuenta").toString());
             }
 
+            // Clasificación para el informe de transparencia (el donante no la elige)
+            if (!(caller != null && caller.rol() == Rol.DONANTE)) {
+                if (payload.get("origen") != null) {
+                    ingreso.setOrigen(payload.get("origen").toString());
+                }
+                if (payload.get("financiador") != null) {
+                    ingreso.setFinanciador(payload.get("financiador").toString());
+                }
+            }
+
             // Quién hizo el ingreso (p. ej. el donante); se copia a la factura al generarla
             if (idUsuario != null) {
                 Usuario donante = new Usuario();

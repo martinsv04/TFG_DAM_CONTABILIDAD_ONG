@@ -110,6 +110,7 @@ CREATE TABLE `gastos` (
   `fecha` date NOT NULL,
   `id_proyecto` bigint DEFAULT NULL,
   `cuenta` varchar(10) DEFAULT NULL,
+  `area` varchar(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_ong` (`id_ong`),
   KEY `FKc5uc0m7uytmpequodf6rdow6p` (`id_proyecto`),
@@ -136,6 +137,8 @@ CREATE TABLE `ingreso` (
   `id_proyecto` bigint DEFAULT NULL,
   `id_subvencion` bigint DEFAULT NULL,
   `cuenta` varchar(10) DEFAULT NULL,
+  `origen` varchar(10) DEFAULT NULL,
+  `financiador` varchar(120) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKgolop720kwilamh50jphpekkp` (`id_ong`),
   KEY `FK523ha1122j3b48jdksuq9lwfx` (`id_usuario`),
@@ -164,6 +167,25 @@ CREATE TABLE `mensajes_contacto` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
+-- Table structure for table `miembros_gobierno`
+--
+
+DROP TABLE IF EXISTS `miembros_gobierno`;
+CREATE TABLE `miembros_gobierno` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `cargo` varchar(80) NOT NULL,
+  `descripcion` varchar(500) DEFAULT NULL,
+  `fecha_nombramiento` date DEFAULT NULL,
+  `nombre` varchar(120) NOT NULL,
+  `orden` int DEFAULT NULL,
+  `organo` varchar(12) NOT NULL,
+  `id_ong` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKmiembros_gobierno_ong` (`id_ong`),
+  CONSTRAINT `FKmiembros_gobierno_ong` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
 -- Table structure for table `ongs`
 --
 
@@ -183,6 +205,7 @@ CREATE TABLE `ongs` (
   `representante` varchar(255) DEFAULT NULL,
   `firma` longtext,
   `logo` longtext,
+  `transparencia_publica` bit(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_admin` (`id_admin`),
   CONSTRAINT `ongs_ibfk_1` FOREIGN KEY (`id_admin`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL

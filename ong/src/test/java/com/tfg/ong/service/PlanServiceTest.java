@@ -129,13 +129,15 @@ class PlanServiceTest {
 
     @Test
     void laOngActivaPorDefectoEsLaMasAntigua() {
-        when(ongRepository.findByAdminId(1L)).thenReturn(List.of(ong(5L), ong(3L), ong(9L)));
+        List<Ong> propias = List.of(ong(5L), ong(3L), ong(9L));
+        when(ongRepository.findByAdminId(1L)).thenReturn(propias);
         assertEquals(3L, plan.ongActiva(1L));
     }
 
     @Test
     void sePuedeElegirOtraOngActivaPeroSoloDeLasPropias() {
-        when(ongRepository.findByAdminId(1L)).thenReturn(List.of(ong(3L), ong(5L)));
+        List<Ong> propias = List.of(ong(3L), ong(5L));
+        when(ongRepository.findByAdminId(1L)).thenReturn(propias);
 
         plan.cambiarOngActiva(1L, 5L);
 
@@ -148,7 +150,8 @@ class PlanServiceTest {
 
     @Test
     void enElBasicoSoloSeEscribeEnLaOngActiva() {
-        when(ongRepository.findByAdminId(1L)).thenReturn(List.of(ong(3L), ong(5L)));
+        List<Ong> propias = List.of(ong(3L), ong(5L));
+        when(ongRepository.findByAdminId(1L)).thenReturn(propias);
 
         assertDoesNotThrow(() -> plan.exigirEscritura(3L));
         PlanException e = assertThrows(PlanException.class, () -> plan.exigirEscritura(5L));
@@ -158,7 +161,8 @@ class PlanServiceTest {
     @Test
     void conElProSePuedeEscribirEnTodasLasOng() {
         suscripcion.setEstado("active");
-        when(ongRepository.findByAdminId(1L)).thenReturn(List.of(ong(3L), ong(5L)));
+        List<Ong> propias = List.of(ong(3L), ong(5L));
+        when(ongRepository.findByAdminId(1L)).thenReturn(propias);
 
         assertDoesNotThrow(() -> plan.exigirEscritura(5L));
         assertDoesNotThrow(() -> plan.exigirNuevaOng(1L));
@@ -192,7 +196,8 @@ class PlanServiceTest {
 
     @Test
     void elBasicoNoPermiteUnaSegundaOngNiLasFuncionesPro() {
-        when(ongRepository.findByAdminId(1L)).thenReturn(List.of(ong(3L)));
+        List<Ong> propias = List.of(ong(3L));
+        when(ongRepository.findByAdminId(1L)).thenReturn(propias);
 
         assertThrows(PlanException.class, () -> plan.exigirNuevaOng(1L));
         assertThrows(PlanException.class, () -> plan.exigirPro(3L));

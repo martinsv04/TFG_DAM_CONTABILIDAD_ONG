@@ -2,6 +2,14 @@ import React from 'react';
 
 // Iconos en SVG (trazo, 24x24). Se usan con <Icon name="home" size={20} />
 const ICONOS = {
+  network: (
+    <>
+      <rect x="9" y="2" width="6" height="5" rx="1" />
+      <rect x="2" y="17" width="6" height="5" rx="1" />
+      <rect x="16" y="17" width="6" height="5" rx="1" />
+      <path d="M12 7v5M5 17v-5h14v5" />
+    </>
+  ),
   home: (
     <>
       <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />

@@ -46,6 +46,10 @@ public class Ong {
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDate fechaCreacion;
 
+    // true = la página pública de transparencia de esta ONG está publicada
+    @Column(name = "transparencia_publica")
+    private Boolean transparenciaPublica;
+
 
     // Del administrador solo se envían id y nombre (sin email, teléfono, NIF/CIF, etc.)
     @JsonIgnoreProperties({"email", "telefono", "nifCif", "direccion", "codigoPostal", "creadoEn", "ong", "rol"})
@@ -105,6 +109,9 @@ public class Ong {
 
     public LocalDate getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDate fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+
+    public Boolean getTransparenciaPublica() { return transparenciaPublica; }
+    public void setTransparenciaPublica(Boolean transparenciaPublica) { this.transparenciaPublica = transparenciaPublica; }
 
     public Usuario getAdmin() { return admin; }
     public void setAdmin(Usuario admin) { this.admin = admin; }

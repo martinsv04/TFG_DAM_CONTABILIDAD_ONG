@@ -78,6 +78,7 @@ public class GastoService {
         actual.setFecha(datos.getFecha());
         actual.setCategoria(datos.getCategoria());
         actual.setCuenta(CuentaContable.normalizar(datos.getCuenta()));
+        actual.setArea(datos.getArea());
         actual.setProyecto(proyecto);
         return gastoRepository.save(actual);
     }

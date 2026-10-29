@@ -412,3 +412,68 @@
 @media (max-width: 720px) {
   .plan-precios, .plan-comparar { grid-template-columns: 1fr; }
 }
+
+/* ---------- Transparencia y gobierno ---------- */
+.graficos-iguales { grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 1.25rem; }
+.tr-seccion { margin-top: 1.25rem; }
+.tr-nota { margin: 0.9rem 0 0; font-size: 0.9rem; }
+.tr-alerta { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 1rem; }
+.tr-alerta svg { flex: none; margin-top: 2px; }
+.tr-anio { display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; }
+.tr-publica { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-top: 1.25rem; }
+.tr-publica-texto { flex: 1 1 360px; min-width: 0; }
+.tr-publica-texto h3 { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.4rem; }
+.tr-publica-texto p { margin: 0 0 0.4rem; }
+.tr-enlace { word-break: break-all; font-weight: 600; }
+.tr-publica-acciones { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.ayuda-campo { margin: 0; font-size: 0.85rem; }
+
+.donut { display: flex; align-items: center; gap: 1.5rem; margin: 0; flex-wrap: wrap; }
+.donut-svg { width: 190px; height: 190px; flex: none; }
+.donut-centro { fill: var(--ink); font-family: var(--font-display); font-size: 14px; font-weight: 800; }
+.donut-centro-sub { fill: var(--muted); font-size: 11px; }
+.donut figcaption { flex: 1 1 200px; min-width: 0; }
+.donut-leyenda { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+.donut-leyenda li { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; align-items: center; column-gap: 0.6rem; row-gap: 0.1rem; font-size: 0.9rem; }
+.donut-leyenda .punto { grid-row: 1 / span 2; align-self: start; margin-top: 0.3rem; }
+.donut-nombre { color: var(--ink-2); }
+.donut-importe { grid-column: 2; grid-row: 2; color: var(--muted); font-size: 0.85rem; font-variant-numeric: tabular-nums; }
+.donut-pct { grid-column: 3; grid-row: 1; text-align: right; font-variant-numeric: tabular-nums; }
+
+.barras-lista { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.9rem; }
+.barras-texto { display: flex; justify-content: space-between; gap: 1rem; font-size: 0.9rem; margin-bottom: 0.3rem; }
+.barras-nombre { color: var(--ink-2); }
+.barras-valor { color: var(--muted); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.barras-valor strong { color: var(--ink); }
+.barras-pista { height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.barras-relleno { height: 100%; border-radius: 4px; }
+
+.organigrama { display: flex; flex-direction: column; align-items: stretch; }
+.org-nivel { text-align: center; }
+.org-titulo { display: inline-flex; align-items: center; gap: 0.4rem; margin: 0 0 1rem; color: var(--ink-2); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+.org-fila { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; }
+.org-tarjeta { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 0.8rem; width: min(300px, 100%); padding: 1rem; text-align: left; }
+.org-tarjeta .avatar { flex: none; }
+.org-datos { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; flex: 1; }
+.org-cargo { color: var(--primary); font-size: 0.88rem; font-weight: 600; }
+.org-desc { margin-top: 0.3rem; color: var(--ink-2); }
+.org-acciones { display: flex; flex: 1 0 100%; justify-content: flex-end; gap: 0.25rem; margin-top: -0.2rem; }
+.org-conector { align-self: center; width: 2px; height: 2rem; margin: 1rem 0; background: var(--line-strong); }
+.org-vacio { margin: 0; }
+
+.publica-pagina { padding: 2.5rem 1.5rem 4rem; }
+.publica-inner { max-width: 1000px; margin: 0 auto; }
+.publica-cabecera h1 { margin: 0.2rem 0 0.6rem; }
+.publica-desc { max-width: 70ch; color: var(--ink-2); font-size: 1.05rem; }
+.publica-ficha { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; margin: 1.2rem 0 0; }
+.publica-ficha dt { color: var(--muted); font-size: 0.8rem; }
+.publica-ficha dd { margin: 0; font-weight: 600; }
+.publica-anio { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin: 2rem 0 1rem; flex-wrap: wrap; }
+.publica-anio h2, .publica-h2 { margin: 0; }
+.publica-h2 { margin: 2.5rem 0 1.2rem; }
+.publica-pie { margin-top: 2.5rem; font-size: 0.85rem; }
+
+@media (max-width: 960px) { .graficos-iguales { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) {
+  .donut { justify-content: center; }
+}

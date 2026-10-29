@@ -33,6 +33,9 @@ import Perfil from './pages/Perfil';
 import NuevaOng from './pages/NuevaOng';
 import Plan from './pages/Plan';
 import Donar from './pages/Donar';
+import Transparencia from './pages/Transparencia';
+import TransparenciaPublica from './pages/TransparenciaPublica';
+import Gobierno from './pages/Gobierno';
 import Privacidad from './pages/Privacidad';
 import Terminos from './pages/Terminos';
 import Gracias from './pages/Gracias';
@@ -55,6 +58,7 @@ function App() {
           <Route path="/privacidad" element={<Privacidad />} />
           <Route path="/terminos" element={<Terminos />} />
           <Route path="/gracias" element={<Gracias />} />
+          <Route path="/transparencia/:id" element={<TransparenciaPublica />} />
         </Route>
 
         {/* Zona privada: barra lateral + contenido */}
@@ -83,6 +87,8 @@ function App() {
           <Route path="/ongs/:id/cuentas" element={<PrivateRoute roles={['ADMIN', 'CONTABLE']}><ResumenCuentas /></PrivateRoute>} />
           <Route path="/ongs/:id/exportar" element={<PrivateRoute roles={['ADMIN', 'CONTABLE']}><Exportar /></PrivateRoute>} />
           <Route path="/ongs/:id/modelo-182" element={<PrivateRoute roles={['ADMIN', 'CONTABLE']}><Modelo182 /></PrivateRoute>} />
+          <Route path="/ongs/:id/transparencia" element={<PrivateRoute roles={['ADMIN', 'CONTABLE']}><Transparencia /></PrivateRoute>} />
+          <Route path="/ongs/:id/gobierno" element={<PrivateRoute roles={['ADMIN', 'CONTABLE', 'VOLUNTARIO']}><Gobierno /></PrivateRoute>} />
           <Route path="/ongs/:id/mis-certificados" element={<PrivateRoute roles={['DONANTE']}><MisCertificados /></PrivateRoute>} />
           <Route path="/perfil" element={<Perfil />} />
           <Route path="/plan" element={<PrivateRoute roles={['ADMIN']}><Plan /></PrivateRoute>} />

@@ -23,6 +23,9 @@ const FormularioMovimiento = ({ titulo, subtitulo, url, campo, etiquetaCampo, op
     id_proyecto: '',
     id_subvencion: '',
     cuenta: '',
+    origen: '',
+    financiador: '',
+    area: '',
   });
 
   const [formData, setFormData] = useState(inicial);
@@ -31,6 +34,7 @@ const FormularioMovimiento = ({ titulo, subtitulo, url, campo, etiquetaCampo, op
   const [enviando, setEnviando] = useState(false);
   const [proyectos, setProyectos] = useState([]);
   const [subvenciones, setSubvenciones] = useState([]);
+  const [financiadoresPrevios, setFinanciadoresPrevios] = useState([]);
   const [cargando, setCargando] = useState(editando);
   const [errorCarga, setErrorCarga] = useState('');
 
@@ -42,6 +46,10 @@ const FormularioMovimiento = ({ titulo, subtitulo, url, campo, etiquetaCampo, op
     if (tipoMovimiento === 'ingreso') {
       axios.get(`http://localhost:8080/api/subvenciones/ong/${id}`)
         .then((res) => setSubvenciones(res.data))
+        .catch(() => {});
+      // Financiadores ya usados en otros ingresos, para sugerirlos al escribir
+      axios.get(`http://localhost:8080/api/ingresos/ong/${id}`)
+        .then((res) => setFinanciadoresPrevios([...new Set(res.data.map((i) => i.financiador).filter(Boolean))]))
         .catch(() => {});
     }
   }, [id, tipoMovimiento]);
@@ -60,6 +68,9 @@ const FormularioMovimiento = ({ titulo, subtitulo, url, campo, etiquetaCampo, op
           id_proyecto: m.proyecto ? String(m.proyecto.id) : '',
           id_subvencion: m.subvencion ? String(m.subvencion.id) : '',
           cuenta: m.cuenta || '',
+          origen: m.origen || '',
+          financiador: m.financiador || '',
+          area: m.area || '',
         });
       })
       .catch(() => setErrorCarga('No se pudo cargar el movimiento. Puede que no exista o que no tengas acceso.'))
@@ -87,6 +98,9 @@ const FormularioMovimiento = ({ titulo, subtitulo, url, campo, etiquetaCampo, op
     if (!payload.id_proyecto) delete payload.id_proyecto;
     if (!payload.id_subvencion) delete payload.id_subvencion;
     if (!payload.cuenta) delete payload.cuenta;
+    if (!payload.origen) delete payload.origen;
+    if (!payload.financiador) delete payload.financiador;
+    if (!payload.area) delete payload.area;
 
     try {
       if (editando) {
@@ -101,6 +115,10 @@ const FormularioMovimiento = ({ titulo, subtitulo, url, campo, etiquetaCampo, op
         };
         if (tipoMovimiento === 'ingreso') {
           cambios.subvencion = formData.id_subvencion ? { id: Number(formData.id_subvencion) } : null;
+          cambios.origen = formData.origen || null;
+          cambios.financiador = formData.financiador || null;
+        } else {
+          cambios.area = formData.area || null;
         }
         await axios.put(`${url}/${idEdicion}`, cambios);
         toast('Cambios guardados', 'success');
@@ -205,6 +223,42 @@ const FormularioMovimiento = ({ titulo, subtitulo, url, campo, etiquetaCampo, op
               lista={tipoMovimiento === 'ingreso' ? CUENTAS_INGRESO : CUENTAS_GASTO}
             />
           </div>
+
+          {tipoMovimiento === 'ingreso' ? (
+            <>
+              <div className="field">
+                <label htmlFor="origen">Origen de la financiación <span className="text-muted">(opcional)</span></label>
+                <select id="origen" name="origen" value={formData.origen} onChange={handleChange}>
+                  <option value="">Automático (según el tipo)</option>
+                  <option value="PUBLICO">Pública</option>
+                  <option value="PRIVADO">Privada</option>
+                </select>
+              </div>
+              <div className="field">
+                <label htmlFor="financiador">Financiador <span className="text-muted">(opcional)</span></label>
+                <input id="financiador" name="financiador" type="text" list="lista-financiadores" maxLength={120}
+                  placeholder="Ej.: Ayuntamiento de Sevilla" value={formData.financiador} onChange={handleChange} />
+                <datalist id="lista-financiadores">
+                  {[...new Set([...subvenciones.map((s) => s.financiador).filter(Boolean), ...financiadoresPrevios])]
+                    .map((f) => <option key={f} value={f} />)}
+                </datalist>
+              </div>
+              <p className="text-muted span-2 ayuda-campo">
+                Sirven para el informe de transparencia. Si los dejas vacíos se deducen del tipo de ingreso y de la subvención.
+                No escribas nombres de particulares.
+              </p>
+            </>
+          ) : (
+            <div className="field span-2">
+              <label htmlFor="area">Destino del gasto <span className="text-muted">(opcional)</span></label>
+              <select id="area" name="area" value={formData.area} onChange={handleChange}>
+                <option value="">Automático (con proyecto: misión; sin proyecto: administración)</option>
+                <option value="MISION">Misión: actividades y proyectos de la ONG</option>
+                <option value="ADMINISTRACION">Administración: gestión y funcionamiento</option>
+                <option value="CAPTACION">Captación de fondos</option>
+              </select>
+            </div>
+          )}
 
           {proyectosOfrecidos.length > 0 && (
             <div className="field">

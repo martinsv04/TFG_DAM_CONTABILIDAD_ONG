@@ -56,6 +56,13 @@ public class Ingreso {
     @jakarta.persistence.Column(length = 10)
     private String cuenta;
 
+    // Origen de la financiación (PUBLICO o PRIVADO) y quién la aporta; si no se indican, el informe los deduce
+    @jakarta.persistence.Column(length = 10)
+    private String origen;
+
+    @jakarta.persistence.Column(length = 120)
+    private String financiador;
+
     public Ingreso() {
     // Constructor por defecto necesario para JPA
     }
@@ -86,6 +93,12 @@ public class Ingreso {
 
     public String getCuenta() {return cuenta;}
     public void setCuenta(String cuenta) {this.cuenta = cuenta;}
+
+    public String getOrigen() {return origen;}
+    public void setOrigen(String origen) {this.origen = origen;}
+
+    public String getFinanciador() {return financiador;}
+    public void setFinanciador(String financiador) {this.financiador = financiador;}
 
     public String getDescripcion() {return descripcion;}
     public void setDescripcion(String descripcion) {this.descripcion = descripcion;}

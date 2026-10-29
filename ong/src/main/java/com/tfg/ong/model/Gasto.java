@@ -33,6 +33,11 @@ public class Gasto {
     @Column(nullable = false)
     private LocalDate fecha;
 
+    // Destino del gasto (misión, administración o captación de fondos); si no se indica, el informe lo deduce
+    @Enumerated(EnumType.STRING)
+    @Column(length = 20)
+    private AreaGasto area;
+
     @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_ong", nullable = false)
@@ -66,6 +71,9 @@ public class Gasto {
 
     public LocalDate getFecha() {return fecha;}
     public void setFecha(LocalDate fecha) {this.fecha = fecha;}
+
+    public AreaGasto getArea() {return area;}
+    public void setArea(AreaGasto area) {this.area = area;}
 
     public Ong getOng() {return ong;}
     public void setOng(Ong ong) {this.ong = ong;}

@@ -229,6 +229,11 @@ const EconomicArea = () => {
           <span className="atajo-texto"><strong>Resumen por cuenta</strong><small>Totales por cuenta contable</small></span>
           <Icon name="arrow-right" size={18} className="atajo-flecha" />
         </button>
+        <button type="button" className="atajo card card-hover" onClick={() => navigate(`/ongs/${id}/transparencia`)}>
+          <span className="atajo-icono"><Icon name="eye" size={22} /></span>
+          <span className="atajo-texto"><strong>Transparencia</strong><small>Financiación, gastos por destino y página pública</small></span>
+          <Icon name="arrow-right" size={18} className="atajo-flecha" />
+        </button>
         <button type="button" className="atajo card card-hover" onClick={() => navigate(`/ongs/${id}/exportar`)}>
           <span className="atajo-icono"><Icon name="download" size={22} /></span>
           <span className="atajo-texto"><strong>Exportar datos</strong><small>Ingresos, gastos, facturas... en Excel (CSV)</small></span>

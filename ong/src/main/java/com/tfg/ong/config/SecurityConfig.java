@@ -31,7 +31,8 @@ public class SecurityConfig {
             "/api/certificados/**",
             "/api/modelo182/**",
             "/api/proyectos/**",
-            "/api/subvenciones/**"
+            "/api/subvenciones/**",
+            "/api/transparencia/**"
     };
 
     @Bean
@@ -61,6 +62,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/contacto").permitAll()
                         // Avisos de Stripe: públicos, pero el controlador solo acepta los que llevan firma válida
                         .requestMatchers(HttpMethod.POST, "/api/stripe/webhook").permitAll()
+                        // Página pública de transparencia (solo responde si la ONG la ha publicado)
+                        .requestMatchers(HttpMethod.GET, "/api/publico/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
 
                         // ONGs: cualquier usuario autenticado puede ver sus datos y miembros
@@ -70,6 +73,10 @@ public class SecurityConfig {
 
                         // Gestión de usuarios (alta, cambio de rol, borrado...): solo ADMIN
                         .requestMatchers("/api/usuarios/**").hasRole("ADMIN")
+
+                        // Órgano de gobierno: lo ve el equipo de la ONG, solo ADMIN lo modifica
+                        .requestMatchers(HttpMethod.GET, "/api/gobierno/**").authenticated()
+                        .requestMatchers("/api/gobierno/**").hasRole("ADMIN")
 
                         // Plan y facturación: solo ADMIN
                         .requestMatchers("/api/plan/**").hasRole("ADMIN")

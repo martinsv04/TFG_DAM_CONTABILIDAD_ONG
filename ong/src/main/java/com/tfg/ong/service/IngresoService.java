@@ -39,6 +39,8 @@ public class IngresoService {
 
     public Ingreso createIngreso(Ingreso ingreso) {
         ingreso.setCuenta(CuentaContable.normalizar(ingreso.getCuenta()));
+        ingreso.setOrigen(Clasificacion.origen(ingreso.getOrigen()));
+        ingreso.setFinanciador(Clasificacion.financiador(ingreso.getFinanciador()));
         // El proyecto y la subvención (opcionales) deben ser de la misma ONG que el ingreso
         Long idOng = ingreso.getOng() != null ? ingreso.getOng().getId() : null;
         if (ingreso.getProyecto() != null) {
@@ -96,6 +98,8 @@ public class IngresoService {
         actual.setFecha(datos.getFecha());
         actual.setTipo(datos.getTipo());
         actual.setCuenta(CuentaContable.normalizar(datos.getCuenta()));
+        actual.setOrigen(Clasificacion.origen(datos.getOrigen()));
+        actual.setFinanciador(Clasificacion.financiador(datos.getFinanciador()));
         actual.setProyecto(proyecto);
         actual.setSubvencion(subvencion);
         return ingresoRepository.save(actual);

@@ -111,7 +111,11 @@ function AppLayout() {
                   <Enlace to={`/informe/balance/${ongId}`} icono="pie-chart">Balance general</Enlace>
                   <Enlace to={`/informe/resultados/${ongId}`} icono="bar-chart">Estado de resultados</Enlace>
                   <Enlace to={`/ongs/${ongId}/cuentas`} icono="book">Resumen por cuenta</Enlace>
+                  <Enlace to={`/ongs/${ongId}/transparencia`} icono="eye">Transparencia</Enlace>
                 </>
+              )}
+              {(puedeVerEconomia || rol === 'VOLUNTARIO') && (
+                <Enlace to={`/ongs/${ongId}/gobierno`} icono="network">Gobierno y organigrama</Enlace>
               )}
 
               {rol === 'DONANTE' && (

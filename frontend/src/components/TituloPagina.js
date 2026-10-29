@@ -38,6 +38,9 @@ const RUTAS = [
   { ruta: '/ongs/:id/exportar', titulo: 'Exportar datos' },
   { ruta: '/ongs/:id/cuentas', titulo: 'Resumen por cuenta' },
   { ruta: '/ongs/:id/modelo-182', titulo: 'Modelo 182' },
+  { ruta: '/ongs/:id/transparencia', titulo: 'Transparencia' },
+  { ruta: '/ongs/:id/gobierno', titulo: 'Gobierno y organigrama' },
+  { ruta: '/transparencia/:id', titulo: 'Transparencia', publica: true, descripcion: 'Cuentas, origen de la financiación y órgano de gobierno de la entidad.' },
   { ruta: '/perfil', titulo: 'Mi perfil' },
   { ruta: '/donar/:id', titulo: 'Donar' },
 ];

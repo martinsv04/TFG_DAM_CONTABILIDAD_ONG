@@ -26,7 +26,9 @@ import com.tfg.ong.security.AuthUser;
  */
 @Aspect
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
+// Un poco por detrás de HIGHEST_PRECEDENCE: Spring necesita que su ExposeInvocationInterceptor (que ocupa ese
+// primer puesto) se ejecute antes que cualquier aspecto con un parámetro JoinPoint, y con el mismo orden falla
+@Order(Ordered.HIGHEST_PRECEDENCE + 10)
 public class PlanAspect {
 
     private final PlanService plan;
