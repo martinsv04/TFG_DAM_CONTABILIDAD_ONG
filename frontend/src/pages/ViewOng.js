@@ -20,6 +20,8 @@ const ViewOng = () => {
   const [rolEditableId, setRolEditableId] = useState(null);
   const [nuevoRol, setNuevoRol] = useState('');
   const [error, setError] = useState(false);
+  const [passId, setPassId] = useState(null);
+  const [passNueva, setPassNueva] = useState('');
 
   useEffect(() => {
     setRol(localStorage.getItem('rol'));
@@ -70,6 +72,26 @@ const ViewOng = () => {
     } catch (err) {
       console.error('Error al actualizar el rol:', err);
       toast('No se pudo actualizar el rol', 'error');
+    }
+  };
+
+  const generarPassword = () => {
+    const letras = 'abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
+    const numeros = '23456789';
+    const al = (cadena) => cadena[window.crypto.getRandomValues(new Uint32Array(1))[0] % cadena.length];
+    const partes = [al(numeros), al(numeros), al(letras)];
+    while (partes.length < 12) partes.push(al(letras + numeros));
+    setPassNueva(partes.sort(() => window.crypto.getRandomValues(new Uint8Array(1))[0] - 128).join(''));
+  };
+
+  const restablecerPassword = async (miembro) => {
+    try {
+      await axios.patch(`http://localhost:8080/api/usuarios/${miembro.id}/password`, { password: passNueva });
+      toast(`Contraseña de ${miembro.nombre} actualizada. Comunícasela por un canal seguro.`, 'success');
+      setPassId(null);
+      setPassNueva('');
+    } catch (err) {
+      toast(err.response?.data?.message || 'No se pudo cambiar la contraseña', 'error');
     }
   };
 
@@ -183,6 +205,31 @@ const ViewOng = () => {
                       ) : (
                         <button type="button" className="btn btn-secondary btn-sm" onClick={() => abrirSelector(miembro)}>
                           Cambiar rol
+                        </button>
+                      )}
+
+                      {passId === miembro.id ? (
+                        <>
+                          <input
+                            type="text"
+                            className="select-inline"
+                            aria-label={`Nueva contraseña de ${miembro.nombre}`}
+                            placeholder="Nueva contraseña"
+                            autoComplete="off"
+                            value={passNueva}
+                            onChange={(e) => setPassNueva(e.target.value)}
+                          />
+                          <button type="button" className="btn btn-ghost btn-sm" onClick={generarPassword}>Generar</button>
+                          <button type="button" className="btn btn-primary btn-sm" onClick={() => restablecerPassword(miembro)} disabled={passNueva.length < 8}>
+                            Guardar
+                          </button>
+                          <button type="button" className="btn btn-ghost btn-sm" onClick={() => { setPassId(null); setPassNueva(''); }}>
+                            Cancelar
+                          </button>
+                        </>
+                      ) : (
+                        <button type="button" className="btn btn-secondary btn-sm" onClick={() => { setPassId(miembro.id); setPassNueva(''); }}>
+                          Restablecer contraseña
                         </button>
                       )}
 

@@ -13,14 +13,15 @@ import org.hibernate.annotations.OnDeleteAction;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "facturas")
+@Table(name = "facturas", uniqueConstraints = @UniqueConstraint(name = "uk_factura_ong_numero", columnNames = {"id_ong", "numero"}))
 public class Factura {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    // El número es único dentro de cada ONG (no entre ONG distintas): cada entidad lleva su propia serie
+    @Column(nullable = false)
     private String numero;
 
     @ManyToOne
@@ -28,7 +29,7 @@ public class Factura {
     private Ong ong;
 
     // Del usuario solo se envían id y nombre (sin email, teléfono, NIF/CIF, etc.)
-    @JsonIgnoreProperties({"email", "telefono", "nifCif", "creadoEn", "ong", "rol"})
+    @JsonIgnoreProperties({"email", "telefono", "nifCif", "direccion", "codigoPostal", "creadoEn", "ong", "rol"})
     @ManyToOne
     @JoinColumn(name = "id_usuario", nullable = true)
     private Usuario usuario;

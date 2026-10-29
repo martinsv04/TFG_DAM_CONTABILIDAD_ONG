@@ -49,11 +49,11 @@
 .datos dd { margin: 0; font-weight: 500; text-align: right; word-break: break-word; }
 
 .miembros { margin: 0; padding: 0; list-style: none; }
-.miembro { display: flex; align-items: center; gap: 0.9rem; padding: 0.95rem 1.5rem; border-top: 1px solid var(--line); }
+.miembro { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem 0.9rem; padding: 0.95rem 1.5rem; border-top: 1px solid var(--line); }
 .miembro:first-child { border-top: 0; }
-.miembro-datos { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; min-width: 0; flex: 1; }
+.miembro-datos { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; min-width: 160px; flex: 1; }
 .miembro-nombre { font-weight: 600; }
-.miembro-acciones { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.4rem; }
+.miembro-acciones { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 0.4rem; flex: 1 1 100%; padding-left: 3.4rem; }
 
 /* ---------- Indicadores (KPI) ---------- */
 .kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.25rem; }
@@ -76,7 +76,7 @@
 .barra > .barra-naranja { background: linear-gradient(90deg, var(--accent), #f3a074); }
 
 /* ---------- Accesos rápidos ---------- */
-.atajos { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.atajos { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
 .atajo {
   display: flex;
   align-items: center;
@@ -208,3 +208,176 @@
 .movimiento-info strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .movimiento-info small { color: var(--muted); }
 .movimiento-importe { font-weight: 700; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* ---- Certificados de donación ---- */
+.alert-warn { display: flex; align-items: flex-start; gap: 0.6rem; background: var(--accent-50); color: var(--accent-600); margin-bottom: 1rem; }
+.alert-warn a { color: inherit; font-weight: 700; text-decoration: underline; }
+.alert-warn svg { flex: none; margin-top: 2px; }
+.certificados-barra { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.75rem; margin-bottom: 1rem; }
+.badge-sep { margin-left: 0.5rem; }
+.table .acciones { text-align: right; white-space: nowrap; }
+.form-seccion { margin-top: 0.5rem; font-size: 1rem; }
+.form-seccion-nota { margin-top: -0.6rem; font-size: 0.88rem; }
+.usuario-chip-enlace { border-radius: var(--radius-sm, 12px); color: inherit; text-decoration: none; transition: background-color 0.15s; }
+.usuario-chip-enlace:hover, .usuario-chip-enlace.active { background: var(--surface-2); }
+
+.modal-fondo { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(28, 37, 35, 0.45); }
+.modal { width: min(480px, 100%); max-height: 90vh; overflow-y: auto; }
+.modal h2 { font-size: 1.25rem; }
+
+.certificado-papel { max-width: 780px; margin: 0 auto; padding: 3rem 3.2rem; background: #fff; color: #1c2523; border: 1px solid var(--line); border-radius: 6px; box-shadow: var(--shadow-sm); line-height: 1.65; font-size: 0.97rem; }
+.certificado-papel p { margin: 0 0 1rem; }
+.certificado-cabecera { display: flex; justify-content: space-between; gap: 1.5rem; padding-bottom: 1.2rem; margin-bottom: 1.6rem; border-bottom: 2px solid var(--primary); }
+.certificado-cabecera > div { display: flex; flex-direction: column; gap: 0.1rem; font-size: 0.9rem; }
+.certificado-cabecera strong { font-size: 1.1rem; }
+.certificado-numero { text-align: right; }
+.certificado-titulo { text-align: center; font-size: 1.5rem; letter-spacing: 0.04em; text-transform: uppercase; margin: 0 0 1.6rem; color: var(--primary-700); }
+.certificado-certifica { text-align: center; font-weight: 700; letter-spacing: 0.3em; margin: 1.2rem 0 !important; }
+.certificado-tabla { width: 100%; border-collapse: collapse; margin: 1.2rem 0; font-size: 0.92rem; }
+.certificado-tabla th, .certificado-tabla td { padding: 0.5rem 0.7rem; border-bottom: 1px solid var(--line); text-align: left; }
+.certificado-tabla th { background: var(--surface-2); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.certificado-tabla .num { text-align: right; font-variant-numeric: tabular-nums; }
+.certificado-tabla tfoot td { font-weight: 700; border-top: 2px solid var(--line-strong); }
+.certificado-legal { font-size: 0.85rem; color: #44504d; text-align: justify; }
+.certificado-firma { margin-top: 3.2rem; display: flex; flex-direction: column; align-items: center; gap: 0.15rem; font-size: 0.9rem; }
+.certificado-firma-linea { width: 240px; height: 70px; border-bottom: 1px solid #1c2523; margin-bottom: 0.4rem; }
+.certificado-aviso { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 1rem; }
+@media (max-width: 640px) { .certificado-papel { padding: 1.6rem 1.2rem; } .certificado-cabecera { flex-direction: column; } .certificado-numero { text-align: left; } }
+
+/* ---------- Imagen de certificados y Modelo 182 ---------- */
+.subir-imagen-caja { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.subir-imagen-vista { width: 200px; height: 90px; border: 1px dashed var(--line-strong); border-radius: var(--radius, 10px); display: flex; align-items: center; justify-content: center; background: var(--surface-2); color: var(--muted); font-size: 0.85rem; overflow: hidden; }
+.subir-imagen-vista img { max-width: 100%; max-height: 100%; object-fit: contain; }
+.subir-imagen-botones { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.certificado-entidad { align-items: flex-start; }
+.certificado-logo { max-height: 70px; max-width: 220px; object-fit: contain; margin-bottom: 0.4rem; }
+.certificado-firma-linea { position: relative; display: flex; align-items: flex-end; justify-content: center; }
+.certificado-firma-linea img { max-height: 66px; max-width: 100%; object-fit: contain; }
+.resumen-182 { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem; }
+.resumen-182 .card { display: flex; flex-direction: column; gap: 0.15rem; }
+.resumen-182 strong { font-size: 1.25rem; }
+.resumen-182 small { color: var(--muted); }
+.lista-problemas { margin: 0.3rem 0 0.5rem 1.1rem; padding: 0; }
+.problema-fila { color: var(--accent-600); font-size: 0.82rem; margin-top: 0.15rem; }
+
+/* ---------- Proyectos y subvenciones ---------- */
+.proyectos-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; }
+.proyecto-card { padding: 1.4rem; display: flex; flex-direction: column; gap: 0.8rem; cursor: pointer; }
+.proyecto-cabecera { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+.proyecto-cabecera h3 { font-size: 1.1rem; margin: 0; }
+.proyecto-desc { margin: 0; font-size: 0.9rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.proyecto-fechas { margin: 0; font-size: 0.85rem; display: flex; align-items: center; gap: 0.3rem; }
+.proyecto-cifras { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem; margin: 0; }
+.proyecto-cifras dt { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.proyecto-cifras dd { margin: 0.1rem 0 0; font-weight: 700; font-variant-numeric: tabular-nums; font-size: 0.95rem; }
+.proyecto-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem; flex-wrap: wrap; }
+.proyecto-ejecucion { display: flex; flex-direction: column; gap: 1rem; }
+.proyecto-ejecucion-barra { display: flex; flex-direction: column; gap: 0.5rem; }
+.proyecto-ejecucion .alert { margin-bottom: 0; }
+.kpi-grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
+.kpi-mini { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.9rem 1rem; border-radius: 12px; background: var(--surface-2); }
+.kpi-mini strong { font-size: 1.2rem; font-variant-numeric: tabular-nums; }
+.seccion-sub { margin: 0 0 0.75rem; font-size: 1rem; }
+.lista-simple { list-style: none; margin: 0; padding: 0; }
+.lista-simple li { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 0.6rem 0; border-top: 1px solid var(--line); }
+.lista-simple li:first-child { border-top: 0; }
+.progreso-wrap { display: flex; align-items: center; gap: 0.6rem; }
+.progreso { flex: 1; height: 9px; border-radius: 999px; background: var(--surface-2); overflow: hidden; min-width: 70px; }
+.progreso-relleno { height: 100%; border-radius: 999px; background: var(--primary); transition: width 0.4s ease; }
+.progreso-alta .progreso-relleno { background: var(--accent-600); }
+.progreso-excedida .progreso-relleno { background: var(--danger); }
+.progreso-texto { font-size: 0.82rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 3.2rem; text-align: right; }
+.modal-ancho { width: min(640px, 100%); }
+.btn-icon { padding: 0.45rem; }
+.celda-sub { font-size: 0.82rem; margin-top: 0.1rem; }
+.col-ejecucion { min-width: 190px; }
+@media (max-width: 860px) { .kpi-grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .proyecto-cifras { grid-template-columns: 1fr; } .proyectos-grid { grid-template-columns: minmax(0, 1fr); } }
+.celda-proyecto { display: flex; align-items: center; gap: 0.3rem; }
+.proyecto-meta > span { display: inline-flex; align-items: center; gap: 0.35rem; }
+
+/* ---------- Gráficos y exportación ---------- */
+.graficos { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 1.25rem; margin: 1.25rem 0 0.5rem; align-items: start; }
+.graficos-uno { grid-template-columns: minmax(0, 1fr); }
+.grafico-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.grafico-cabecera h3 { margin: 0; font-size: 1.05rem; }
+.grafico { margin: 0; }
+.grafico-svg { width: 100%; height: auto; display: block; }
+.grafico-rejilla { stroke: var(--line); stroke-width: 1; }
+.grafico-eje { fill: var(--muted); font-size: 11px; }
+.grafico-ingresos { fill: var(--success); }
+.grafico-gastos { fill: var(--accent); }
+.grafico-ingresos:hover, .grafico-gastos:hover { opacity: 0.8; }
+.grafico-leyenda { display: flex; gap: 1.2rem; justify-content: center; margin-top: 0.4rem; font-size: 0.85rem; color: var(--ink-2); }
+.grafico-leyenda span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.punto { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+.punto-ingresos { background: var(--success); }
+.punto-gastos { background: var(--accent); }
+.ejecucion-lista { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 1rem; }
+.ejecucion-fila { display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; margin-bottom: 0.35rem; font-size: 0.9rem; }
+.exportar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; }
+.exportar-card { padding: 1.4rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.exportar-card h3 { margin: 0; font-size: 1.05rem; display: flex; align-items: center; gap: 0.5rem; }
+.exportar-card p { margin: 0; flex: 1; font-size: 0.9rem; }
+@media (max-width: 960px) { .graficos { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Registro de actividad ---------- */
+.auditoria-filtros { display: flex; gap: 1rem; flex-wrap: wrap; align-items: flex-end; }
+.auditoria-filtros .field { min-width: 150px; flex: 1; }
+.auditoria-detalle { min-width: 240px; max-width: 520px; font-size: 0.9rem; color: var(--ink-2); overflow-wrap: anywhere; }
+.nowrap { white-space: nowrap; }
+.paginacion { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding: 0.9rem 1.25rem; border-top: 1px solid var(--line); }
+.paginacion-botones { display: flex; gap: 0.5rem; }
+
+/* Cuadro de texto con sugerencias (cuenta contable) */
+.combo { position: relative; }
+.combo-lista {
+  position: absolute; z-index: 20; left: 0; right: 0; top: calc(100% + 4px);
+  margin: 0; padding: 0.25rem; list-style: none;
+  background: var(--surface, #fff); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12); max-height: 260px; overflow-y: auto;
+}
+.combo-lista li { padding: 0.5rem 0.65rem; border-radius: 8px; cursor: pointer; font-size: 0.9rem; color: var(--ink-2); }
+.combo-lista li strong { color: var(--ink); margin-right: 0.35rem; font-variant-numeric: tabular-nums; }
+.combo-lista li.activa { background: var(--accent-soft, rgba(0, 0, 0, 0.06)); }
+
+/* Opciones y datos contables de la factura */
+.factura-opciones { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1.25rem; margin-bottom: 1rem; font-size: 0.9rem; }
+.factura-opciones label { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; color: var(--ink-2); }
+.factura-destinatario { margin-bottom: 1.25rem; color: var(--ink-2); }
+.factura-destinatario .factura-etiqueta { margin-right: 0.5rem; }
+.factura-contable { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem 1.5rem; margin: 1.75rem 0 0; padding: 1rem 1.25rem; border: 1px solid var(--line); border-radius: var(--radius-sm); }
+.factura-contable dt { color: var(--muted); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+.factura-contable dd { margin: 0.15rem 0 0; color: var(--ink); overflow-wrap: anywhere; }
+@media (max-width: 640px) { .factura-contable { grid-template-columns: 1fr; } }
+
+/* Acciones de editar / borrar en las listas de movimientos */
+.movimientos .table td:nth-child(2), .movimientos .table td.num { white-space: nowrap; }
+.acciones-fila { width: 84px; min-width: 84px; white-space: nowrap; padding-left: 0 !important; padding-right: 0.75rem !important; }
+.acciones-fila .btn { padding: 0.3rem; margin-left: 0; }
+/* Con la barra lateral, dos listas a la vez no caben cómodas: se apilan */
+@media (max-width: 1500px) { .movimientos { grid-template-columns: minmax(0, 1fr); } }
+
+/* Resumen por cuenta contable */
+.resumen-cuentas { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; align-items: start; }
+@media (max-width: 1500px) { .resumen-cuentas { grid-template-columns: minmax(0, 1fr); } }
+.resumen-vacio { padding: 1.25rem; margin: 0; }
+.resumen-resultado { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem 1rem; margin-top: 1.25rem; }
+.resumen-resultado strong { font-family: var(--font-display); font-size: 1.4rem; }
+.cuenta-alternar { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.15rem 0; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.cuenta-alternar:hover .cuenta-codigo { text-decoration: underline; }
+.cuenta-flecha { display: inline-flex; transition: transform 0.15s ease; color: var(--muted); }
+.cuenta-flecha.abierta { transform: rotate(90deg); }
+.cuenta-codigo { font-weight: 700; font-variant-numeric: tabular-nums; min-width: 2.2rem; }
+.cuenta-detalle > td { padding: 0 !important; background: var(--surface-2); }
+.cuenta-detalle-tabla { margin: 0; }
+.cuenta-detalle-tabla td { padding: 0.5rem 0.75rem; font-size: 0.88rem; border-bottom: 1px solid var(--line); }
+.cuenta-detalle-tabla tr:last-child td { border-bottom: 0; }
+.cuenta-detalle-tabla td:first-child { padding-left: 2.2rem; }
+
+/* Desglose de la factura: base imponible e IVA */
+.factura-desglose { display: grid; gap: 0.35rem; margin: 1.5rem 0 0 auto; max-width: 320px; }
+.factura-desglose > div { display: flex; justify-content: space-between; gap: 1rem; }
+.factura-desglose dt { color: var(--muted); }
+.factura-desglose dd { margin: 0; color: var(--ink); font-variant-numeric: tabular-nums; }
+.factura-desglose + .factura-total { margin-top: 0.75rem; }

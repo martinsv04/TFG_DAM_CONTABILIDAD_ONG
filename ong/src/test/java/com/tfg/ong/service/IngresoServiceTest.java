@@ -58,19 +58,42 @@ public class IngresoServiceTest {
     }
 
     @Test
-    public void testUpdateIngreso() {
-        when(ingresoRepository.save(any(Ingreso.class))).thenReturn(mockIngreso);
+    public void testUpdateIngresoCambiaSoloLosDatosEditables() {
+        Usuario donante = new Usuario();
+        donante.setId(7L);
+        mockIngreso.setUsuario(donante);
+        when(ingresoRepository.findById(1L)).thenReturn(Optional.of(mockIngreso));
+        when(ingresoRepository.save(any(Ingreso.class))).thenAnswer(i -> i.getArgument(0));
         Ingreso input = new Ingreso();
         input.setMonto(new BigDecimal("300.00"));
         input.setDescripcion("Ingreso actualizado");
         input.setFecha(LocalDate.of(2024, 6, 1));
         input.setTipo("Subvención");
-        input.setOng(mockOng);
+        input.setCuenta("740");
 
         Ingreso result = ingresoService.updateIngresos(1L, input);
 
         assertEquals(1L, result.getId());
-        verify(ingresoRepository, times(1)).save(input);
+        assertEquals("Ingreso actualizado", result.getDescripcion());
+        assertEquals(new BigDecimal("300.00"), result.getMonto());
+        assertEquals("740", result.getCuenta());
+        assertSame(mockOng, result.getOng(), "La ONG del ingreso no debe cambiar");
+        assertSame(donante, result.getUsuario(), "La persona que donó no debe cambiar");
+        verify(ingresoRepository, times(1)).save(mockIngreso);
+    }
+
+    @Test
+    public void testUpdateIngresoNoExistenteOConDatosInvalidos() {
+        when(ingresoRepository.findById(9L)).thenReturn(Optional.empty());
+        assertThrows(IllegalArgumentException.class, () -> ingresoService.updateIngresos(9L, mockIngreso));
+
+        when(ingresoRepository.findById(1L)).thenReturn(Optional.of(mockIngreso));
+        Ingreso sinFecha = new Ingreso();
+        sinFecha.setDescripcion("x");
+        sinFecha.setMonto(new BigDecimal("5"));
+        sinFecha.setTipo("OTROS");
+        assertThrows(IllegalArgumentException.class, () -> ingresoService.updateIngresos(1L, sinFecha));
+        verify(ingresoRepository, never()).save(any());
     }
 
     @Test

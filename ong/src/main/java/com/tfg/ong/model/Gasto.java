@@ -3,7 +3,11 @@ package com.tfg.ong.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.*;
 
@@ -21,6 +25,10 @@ public class Gasto {
 
     private String descripcion;
     private BigDecimal monto;
+
+    // Cuenta contable (plan de contabilidad de entidades sin fines lucrativos), opcional; p. ej. "623"
+    @Column(length = 10)
+    private String cuenta;
     
     @Column(nullable = false)
     private LocalDate fecha;
@@ -29,6 +37,13 @@ public class Gasto {
     @ManyToOne
     @JoinColumn(name = "id_ong", nullable = false)
     private Ong ong;
+
+    // Proyecto al que se imputa el gasto (opcional); solo se envían id y nombre
+    @JsonIgnoreProperties({"descripcion", "estado", "fechaInicio", "fechaFin", "presupuesto"})
+    @OnDelete(action = OnDeleteAction.SET_NULL)
+    @ManyToOne
+    @JoinColumn(name = "id_proyecto")
+    private Proyecto proyecto;
 
     public Gasto() {
     // Constructor por defecto necesario para JPA
@@ -43,6 +58,9 @@ public class Gasto {
     public String getDescripcion() {return descripcion;}
     public void setDescripcion(String descripcion) {this.descripcion = descripcion;}
 
+    public String getCuenta() {return cuenta;}
+    public void setCuenta(String cuenta) {this.cuenta = cuenta;}
+
     public BigDecimal getMonto() {return monto;}
     public void setMonto(BigDecimal monto) {this.monto = monto;}
 
@@ -51,6 +69,9 @@ public class Gasto {
 
     public Ong getOng() {return ong;}
     public void setOng(Ong ong) {this.ong = ong;}
+
+    public Proyecto getProyecto() {return proyecto;}
+    public void setProyecto(Proyecto proyecto) {this.proyecto = proyecto;}
 
     @Override
     public String toString() {

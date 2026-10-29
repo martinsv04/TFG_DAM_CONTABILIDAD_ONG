@@ -7,6 +7,7 @@ import org.springframework.security.access.AccessDeniedException;
 import com.tfg.ong.model.Categoria;
 import com.tfg.ong.model.Gasto;
 import com.tfg.ong.model.Ong;
+import com.tfg.ong.model.Proyecto;
 import com.tfg.ong.repository.GastoRepository;
 import com.tfg.ong.repository.OngRepository;
 import com.tfg.ong.service.GastoService;
@@ -56,11 +57,14 @@ public class GastoController {
     }
 
     @PutMapping("/{id}")
-    public Gasto updateGasto(@PathVariable Long id, @RequestBody Gasto gasto, @AuthenticationPrincipal AuthUser caller) {
+    public ResponseEntity<Object> updateGasto(@PathVariable Long id, @RequestBody Gasto gasto, @AuthenticationPrincipal AuthUser caller) {
         ongAccess.verificarGasto(caller, id);
 
-
-        return gastoService.updateGastos(id, gasto);
+        try {
+            return ResponseEntity.ok(gastoService.updateGastos(id, gasto));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", String.valueOf(e.getMessage())));
+        }
 
     }
 
@@ -106,6 +110,16 @@ public class GastoController {
             gasto.setCategoria(Categoria.valueOf(categoriaStr));
             gasto.setFecha(LocalDate.parse(fechaStr));
             gasto.setOng(ong);
+            if (payload.get("cuenta") != null) {
+                gasto.setCuenta(payload.get("cuenta").toString());
+            }
+
+            // Proyecto opcional; se comprueba que sea de esta ONG al guardar
+            if (payload.get("id_proyecto") != null && !payload.get("id_proyecto").toString().isBlank()) {
+                Proyecto proyecto = new Proyecto();
+                proyecto.setId(Long.parseLong(payload.get("id_proyecto").toString()));
+                gasto.setProyecto(proyecto);
+            }
 
             Gasto gastoGuardado = gastoService.createGasto(gasto);
 
@@ -118,6 +132,8 @@ public class GastoController {
 
         } catch (AccessDeniedException e) {
             throw e;
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", String.valueOf(e.getMessage())));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();

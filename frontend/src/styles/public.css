@@ -129,3 +129,58 @@
   .public-nav-actions { gap: 0.25rem; }
   .public-nav-actions .btn { padding: 0.4rem 0.7rem; font-size: 0.82rem; }
 }
+
+
+/* ---------- Pie: enlaces legales ---------- */
+.public-footer-legal { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; }
+.public-footer-legal a, .enlace-boton { color: var(--primary); font-weight: 500; }
+.public-footer-legal a:hover, .enlace-boton:hover { text-decoration: underline; }
+.enlace-boton { padding: 0; border: 0; background: none; font: inherit; cursor: pointer; }
+
+/* ---------- Páginas legales ---------- */
+.legal-pagina { padding: 2.5rem 1.5rem 4rem; }
+.legal-inner { max-width: 760px; margin: 0 auto; }
+.legal-inner h1 { margin: 1rem 0 0.25rem; }
+.legal-fecha { color: var(--muted); font-size: 0.88rem; }
+.legal-intro { margin-top: 1rem; color: var(--ink-2); font-size: 1.05rem; }
+.legal { margin-top: 2rem; color: var(--ink-2); line-height: 1.7; }
+.legal h2 { margin: 2rem 0 0.5rem; color: var(--ink); font-size: 1.2rem; scroll-margin-top: 5rem; }
+.legal p { margin: 0 0 0.9rem; }
+.legal ul { margin: 0 0 0.9rem; padding-left: 1.25rem; }
+.legal li { margin-bottom: 0.4rem; }
+.legal a { color: var(--primary); text-decoration: underline; }
+.legal code { padding: 0.1rem 0.35rem; border-radius: 6px; background: var(--surface-2); font-size: 0.85em; }
+.legal-pendiente { padding: 0.05rem 0.35rem; border-radius: 6px; background: #fff3c4; color: #7a5600; font-weight: 600; }
+.legal-tabla-wrap { overflow-x: auto; margin: 0 0 1rem; }
+.legal-tabla { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.legal-tabla th, .legal-tabla td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+.legal-tabla th { color: var(--muted); font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; }
+
+/* ---------- Páginas 404 y gracias ---------- */
+.estado-pagina { display: flex; align-items: center; justify-content: center; min-height: 60vh; padding: 3rem 1.5rem; }
+.estado-inner { max-width: 520px; text-align: center; }
+.estado-codigo { margin: 0; font-family: var(--font-display); font-size: clamp(4.5rem, 18vw, 7.5rem); font-weight: 800; line-height: 1; color: var(--primary); letter-spacing: -0.04em; }
+.estado-icono { display: inline-flex; align-items: center; justify-content: center; width: 72px; height: 72px; margin-bottom: 1rem; border-radius: 50%; background: var(--primary-50); color: var(--primary); }
+.estado-inner h1 { margin: 0.5rem 0 0.75rem; }
+.estado-texto { margin: 0 auto 1.75rem; color: var(--ink-2); }
+.estado-acciones { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; }
+
+/* ---------- Aviso de cookies ---------- */
+.cookies { position: fixed; z-index: 90; left: 1rem; right: 1rem; bottom: 1rem; display: flex; justify-content: center; pointer-events: none; }
+.cookies-cuerpo { width: 100%; max-width: 680px; padding: 1.25rem 1.4rem; border: 1px solid var(--line); border-radius: var(--radius); background: #fff; box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18); pointer-events: auto; }
+.cookies-cuerpo h2 { margin: 0 0 0.35rem; font-size: 1.05rem; }
+.cookies-cuerpo p { margin: 0 0 0.9rem; color: var(--ink-2); font-size: 0.9rem; }
+.cookies-cuerpo a { color: var(--primary); text-decoration: underline; }
+.cookies-opciones { display: grid; gap: 0.6rem; margin-bottom: 1rem; }
+.cookies-opcion { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.9rem; cursor: pointer; }
+.cookies-opcion input { margin-top: 0.25rem; }
+.cookies-opcion small { display: block; color: var(--muted); }
+.cookies-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+@media (max-width: 520px) { .cookies { left: 0.5rem; right: 0.5rem; bottom: 0.5rem; } .cookies-acciones .btn { flex: 1 1 100%; } }
+
+/* ---------- Formulario de contacto ---------- */
+.campo-trampa { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.check-legal { display: flex; align-items: flex-start; gap: 0.6rem; margin-bottom: 1rem; color: var(--ink-2); font-size: 0.9rem; }
+.check-legal input { margin-top: 0.2rem; }
+.check-legal a { color: var(--primary); text-decoration: underline; }
+.legal-inner .auth-volver { display: inline-flex; align-items: center; gap: 0.4rem; }

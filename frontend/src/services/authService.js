@@ -1,7 +1,9 @@
 import axios from 'axios';
 
-// Dirección del backend. El token solo se envía a peticiones que empiecen por esta URL.
-const API_URL = 'http://localhost:8080';
+// Dirección del backend. En producción se define con la variable REACT_APP_API_URL (ver DESPLIEGUE.md).
+// Las páginas escriben las URL con la dirección local; aquí se cambian por la real antes de enviar la petición.
+const LOCAL_URL = 'http://localhost:8080';
+export const API_URL = (process.env.REACT_APP_API_URL || LOCAL_URL).replace(/\/+$/, '');
 
 export const guardarSesion = ({ token, rol, id }) => {
   localStorage.setItem('token', token);
@@ -39,6 +41,9 @@ export const haySesionValida = () => {
 export const configurarAxios = () => {
   // Añade "Authorization: Bearer <token>" a todas las peticiones al backend
   axios.interceptors.request.use((config) => {
+    if (config.url && API_URL !== LOCAL_URL && config.url.startsWith(LOCAL_URL)) {
+      config.url = API_URL + config.url.slice(LOCAL_URL.length);
+    }
     const token = getToken();
     if (token && config.url && config.url.startsWith(API_URL)) {
       config.headers.Authorization = `Bearer ${token}`;

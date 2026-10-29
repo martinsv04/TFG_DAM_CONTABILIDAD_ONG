@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -83,6 +84,8 @@ public class OngController {
             ong.setDireccion(updatedOng.getDireccion());
             ong.setTelefono(updatedOng.getTelefono());
             ong.setEmail(updatedOng.getEmail());
+            ong.setNif(updatedOng.getNif());
+            ong.setRepresentante(updatedOng.getRepresentante());
 
             ongRepository.save(ong);
 
@@ -93,6 +96,56 @@ public class OngController {
 
     }
 
+
+    // ---- Logo y firma para los certificados (solo ADMIN, ver SecurityConfig) ----
+
+    private static final java.util.regex.Pattern IMAGEN = java.util.regex.Pattern.compile("^data:image/(png|jpeg|webp);base64,[A-Za-z0-9+/=]+$");
+    private static final int MAX_IMAGEN = 400_000; // caracteres de la data URL (~300 KB)
+
+    @GetMapping("/{id}/imagenes")
+    public ResponseEntity<Map<String, String>> getImagenes(@PathVariable Long id, @AuthenticationPrincipal AuthUser caller) {
+        ongAccess.verificarOng(caller, id);
+
+        return ongRepository.findById(id)
+                .map(ong -> {
+                    Map<String, String> imagenes = new java.util.HashMap<>();
+                    imagenes.put("logo", ong.getLogo());
+                    imagenes.put("firma", ong.getFirma());
+                    return ResponseEntity.ok(imagenes);
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    /** Guarda (o borra, si se envía null o vacío) el logo y/o la firma. Solo se tocan las claves que vienen en el cuerpo. */
+    @PutMapping("/{id}/imagenes")
+    public ResponseEntity<Object> setImagenes(@PathVariable Long id, @RequestBody Map<String, String> cuerpo,
+                                              @AuthenticationPrincipal AuthUser caller) {
+        ongAccess.verificarOng(caller, id);
+
+        for (String clave : new String[] {"logo", "firma"}) {
+            String valor = cuerpo.get(clave);
+            if (valor != null && !valor.isBlank()
+                    && (valor.length() > MAX_IMAGEN || !IMAGEN.matcher(valor).matches())) {
+                return ResponseEntity.badRequest().body(Map.of("message",
+                        "El " + clave + " debe ser una imagen PNG, JPG o WebP de menos de 300 KB"));
+            }
+        }
+
+        Optional<Ong> ongOpt = ongRepository.findById(id);
+        if (ongOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Ong ong = ongOpt.get();
+        if (cuerpo.containsKey("logo")) {
+            ong.setLogo(cuerpo.get("logo") == null || cuerpo.get("logo").isBlank() ? null : cuerpo.get("logo"));
+        }
+        if (cuerpo.containsKey("firma")) {
+            ong.setFirma(cuerpo.get("firma") == null || cuerpo.get("firma").isBlank() ? null : cuerpo.get("firma"));
+        }
+        ongRepository.save(ong);
+
+        return ResponseEntity.noContent().build();
+    }
 
     @DeleteMapping("/{id}")
     public void deleteOng(@PathVariable Long id, @AuthenticationPrincipal AuthUser caller) {

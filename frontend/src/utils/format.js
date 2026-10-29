@@ -23,6 +23,14 @@ export const formatoFecha = (fecha) => {
   return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
 };
 
+export const formatoFechaLarga = (fecha) => {
+  if (!fecha) return '-';
+  const partes = String(fecha).split('T')[0].split('-');
+  if (partes.length !== 3) return String(fecha);
+  const date = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]), 12);
+  return date.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+};
+
 export const iniciales = (nombre) => {
   if (!nombre) return '?';
   const palabras = String(nombre).trim().split(/\s+/);

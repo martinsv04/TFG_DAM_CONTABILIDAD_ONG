@@ -7,11 +7,15 @@ import Icon from '../components/Icons';
 import { Cargando, EstadoVacio } from '../components/Estados';
 import { formatoEuro, formatoFecha, formatoNumero } from '../utils/format';
 import { OngContext } from '../components/OngContext';
+import { textoCuenta } from '../utils/cuentas';
 
 const FacturaDetalle = () => {
   const { id } = useParams();
   const [factura, setFactura] = useState(null);
   const [error, setError] = useState(false);
+  // Qué datos opcionales aparecen en la factura (y en su PDF)
+  const [verEntidad, setVerEntidad] = useState(true);
+  const [verContable, setVerContable] = useState(true);
   const { fijarOng } = useContext(OngContext);
 
   useEffect(() => {
@@ -42,6 +46,26 @@ const FacturaDetalle = () => {
 
   // Una factura puede no tener líneas de detalle (por ejemplo, las creadas al registrar un ingreso o un gasto)
   const detalles = factura.detalles || [];
+  const movimiento = factura.ingreso || factura.gasto || null;
+  const esIngreso = Boolean(factura.ingreso);
+  const ong = factura.ong || {};
+  const contacto = [ong.email, ong.telefono].filter(Boolean).join(' · ');
+  const datosContables = movimiento
+    ? [
+        ['Tipo de movimiento', esIngreso ? 'Ingreso' : 'Gasto'],
+        [esIngreso ? 'Tipo de ingreso' : 'Categoría', esIngreso ? movimiento.tipo : movimiento.categoria],
+        ['Cuenta contable', textoCuenta(movimiento.cuenta)],
+        ['Proyecto', movimiento.proyecto?.nombre],
+        ['Subvención', movimiento.subvencion?.nombre],
+        ['Fecha del movimiento', movimiento.fecha ? formatoFecha(movimiento.fecha) : ''],
+      ].filter(([, valor]) => valor)
+    : [];
+  // Desglose: la base es la suma de las líneas y la cuota lo que falta hasta el total (el total ya lleva el IVA incluido)
+  const base = detalles.reduce((suma, d) => suma + Number(d.precio || 0) * Number(d.cantidad || 1), 0);
+  const cuota = Math.round((Number(factura.total) - base + Number.EPSILON) * 100) / 100;
+  const tiposIva = [...new Set(detalles.map((d) => Number(d.iva || 0)))];
+  const conIva = cuota !== 0 || tiposIva.some((t) => t > 0);
+  const etiquetaIva = tiposIva.length === 1 && tiposIva[0] > 0 ? `IVA (${tiposIva[0]} %)` : 'IVA';
   const formatear = (valor) => (valor === null || valor === undefined || valor === '' ? '-' : formatoNumero(valor));
 
   const handleDownloadPDF = () => {
@@ -71,6 +95,12 @@ const FacturaDetalle = () => {
         </button>
       </div>
 
+      <div className="factura-opciones" role="group" aria-label="Datos que se incluyen en la factura">
+        <span className="text-muted">Incluir en la factura:</span>
+        <label><input type="checkbox" checked={verEntidad} onChange={(e) => setVerEntidad(e.target.checked)} /> Datos de la entidad</label>
+        <label><input type="checkbox" checked={verContable} onChange={(e) => setVerContable(e.target.checked)} disabled={datosContables.length === 0} /> Datos contables</label>
+      </div>
+
       <div id="factura-pdf" className="factura-papel">
         <div className="factura-cabecera">
           <div>
@@ -78,17 +108,26 @@ const FacturaDetalle = () => {
             <h2>Nº {factura.numero}</h2>
           </div>
           <div className="factura-ong">
-            <strong>{factura.ong?.nombre}</strong>
-            <span>{formatoFecha(factura.fecha)}</span>
+            <strong>{ong.nombre}</strong>
+            {verEntidad && ong.nif && <span>NIF/CIF: {ong.nif}</span>}
+            {verEntidad && ong.direccion && <span>{ong.direccion}</span>}
+            {verEntidad && contacto && <span>{contacto}</span>}
+            <span>Fecha: {formatoFecha(factura.fecha)}</span>
           </div>
         </div>
+
+        {factura.usuario && (
+          <p className="factura-destinatario">
+            <span className="factura-etiqueta">{esIngreso ? 'Recibido de' : 'Emitida a'}</span> {factura.usuario.nombre}
+          </p>
+        )}
 
         <table className="factura-tabla">
           <thead>
             <tr>
               <th>Descripción</th>
               <th className="num">Cantidad</th>
-              <th className="num">Precio (€)</th>
+              <th className="num">Base (€)</th>
               <th className="num">IVA (%)</th>
             </tr>
           </thead>
@@ -110,8 +149,23 @@ const FacturaDetalle = () => {
           </tbody>
         </table>
 
+        {verContable && datosContables.length > 0 && (
+          <dl className="factura-contable">
+            {datosContables.map(([etiqueta, valor]) => (
+              <div key={etiqueta}><dt>{etiqueta}</dt><dd>{valor}</dd></div>
+            ))}
+          </dl>
+        )}
+
+        {conIva && (
+          <dl className="factura-desglose">
+            <div><dt>Base imponible</dt><dd>{formatoEuro(base)}</dd></div>
+            <div><dt>{etiquetaIva}</dt><dd>{formatoEuro(cuota)}</dd></div>
+          </dl>
+        )}
+
         <div className="factura-total">
-          <span>Total</span>
+          <span>{conIva ? 'Total (IVA incluido)' : 'Total'}</span>
           <strong>{formatoEuro(factura.total)}</strong>
         </div>
       </div>

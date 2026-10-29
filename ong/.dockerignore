@@ -1,0 +1,4 @@
+target/
+.git/
+*.zip
+src/main/java/com/tfg/ong/*.zip

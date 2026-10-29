@@ -1,6 +1,14 @@
+-- ONGestión · estructura de la base de datos MySQL `tfg_ong` (solo tablas, sin datos).
+-- Uso:  mysql -u root -p < tfg_db.sql
+-- El backend usa spring.jpa.hibernate.ddl-auto=update, así que también puede crear/actualizar las
+-- tablas por sí solo al arrancar; este archivo sirve para montar la base de golpe y documentarla.
+-- Tablas: ongs, usuarios, ingreso, gastos, facturas, detalles_factura, proyectos, subvenciones,
+--         reportes, auditoria, mensajes_contacto.
+CREATE DATABASE  IF NOT EXISTS `tfg_ong` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `tfg_ong`;
 -- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
 --
--- Host: 127.0.0.1    Database: tfg_ong
+-- Database: tfg_ong
 -- ------------------------------------------------------
 -- Server version	8.0.41
 
@@ -14,6 +22,29 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `auditoria`
+--
+
+DROP TABLE IF EXISTS `auditoria`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `auditoria` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `accion` varchar(10) NOT NULL,
+  `descripcion` varchar(600) DEFAULT NULL,
+  `entidad` varchar(20) NOT NULL,
+  `entidad_id` bigint DEFAULT NULL,
+  `fecha` datetime(6) NOT NULL,
+  `id_ong` bigint DEFAULT NULL,
+  `usuario_id` bigint DEFAULT NULL,
+  `usuario_nombre` varchar(150) DEFAULT NULL,
+  `usuario_rol` varchar(20) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_auditoria_ong_fecha` (`id_ong`,`fecha`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `detalles_factura`
@@ -32,18 +63,8 @@ CREATE TABLE `detalles_factura` (
   PRIMARY KEY (`id`),
   KEY `detalles_factura_ibfk_1` (`id_factura`),
   CONSTRAINT `detalles_factura_ibfk_1` FOREIGN KEY (`id_factura`) REFERENCES `facturas` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `detalles_factura`
---
-
-LOCK TABLES `detalles_factura` WRITE;
-/*!40000 ALTER TABLE `detalles_factura` DISABLE KEYS */;
-INSERT INTO `detalles_factura` VALUES (1,1,'Donación anónima',1,750.00,0.00),(2,2,'Donación anónima',1,750.00,0.00),(3,3,'Donación anónima',1,50.00,0.00),(4,4,'Compra de material educativo',1,200.00,0.00),(5,5,'Transporte Voluntarios',1,45.00,0.00),(6,6,'Sueldo Coordinador IT',1,1200.00,0.00),(7,7,'Donacion para mis queridisimos animales',1,500.00,0.00),(9,8,'Transporte voluntarios',1,45.00,0.00),(10,9,'Donación mensual',1,150.00,0.00);
-/*!40000 ALTER TABLE `detalles_factura` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `facturas`
@@ -59,24 +80,19 @@ CREATE TABLE `facturas` (
   `numero` varchar(255) NOT NULL,
   `fecha` date NOT NULL,
   `total` decimal(38,2) NOT NULL,
+  `id_gasto` bigint DEFAULT NULL,
+  `id_ingreso` bigint DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `numero` (`numero`),
-  KEY `id_ong` (`id_ong`),
+  UNIQUE KEY `uk_factura_ong_numero` (`id_ong`,`numero`),
   KEY `id_usuario` (`id_usuario`),
+  KEY `FK6kwb915i84bcswnbjo1y83flx` (`id_gasto`),
+  KEY `FKqhj9rp8eekp7ewv3mdv2pc39i` (`id_ingreso`),
   CONSTRAINT `facturas_ibfk_1` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`) ON DELETE CASCADE,
-  CONSTRAINT `facturas_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `facturas_ibfk_2` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK6kwb915i84bcswnbjo1y83flx` FOREIGN KEY (`id_gasto`) REFERENCES `gastos` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FKqhj9rp8eekp7ewv3mdv2pc39i` FOREIGN KEY (`id_ingreso`) REFERENCES `ingreso` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `facturas`
---
-
-LOCK TABLES `facturas` WRITE;
-/*!40000 ALTER TABLE `facturas` DISABLE KEYS */;
-INSERT INTO `facturas` VALUES (1,3,NULL,'F-9AC798EB','2025-05-12',750.00),(2,3,NULL,'F-4DE5C102','2025-05-12',750.00),(3,3,NULL,'F-BA572E2A','2025-05-12',50.00),(4,3,NULL,'G-04C8EF62','2025-05-12',200.00),(5,3,NULL,'G-5F4CC731','2025-05-12',45.00),(6,3,NULL,'G-FA747268','2025-05-16',1200.00),(7,3,NULL,'F-3035CDC2','2025-05-30',500.00),(8,1,NULL,'G-F0AFFA0D','2025-05-30',45.00),(9,1,2,'F-AE800CB5','2025-05-30',150.00);
-/*!40000 ALTER TABLE `facturas` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `gastos`
@@ -92,21 +108,15 @@ CREATE TABLE `gastos` (
   `descripcion` varchar(255) NOT NULL,
   `monto` decimal(38,2) DEFAULT NULL,
   `fecha` date NOT NULL,
+  `id_proyecto` bigint DEFAULT NULL,
+  `cuenta` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `id_ong` (`id_ong`),
+  KEY `FKc5uc0m7uytmpequodf6rdow6p` (`id_proyecto`),
+  CONSTRAINT `FKc5uc0m7uytmpequodf6rdow6p` FOREIGN KEY (`id_proyecto`) REFERENCES `proyectos` (`id`) ON DELETE SET NULL,
   CONSTRAINT `gastos_ibfk_1` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `gastos`
---
-
-LOCK TABLES `gastos` WRITE;
-/*!40000 ALTER TABLE `gastos` DISABLE KEYS */;
-INSERT INTO `gastos` VALUES (1,3,'PERSONAL','Sueldo coordinador proyecto',1200.00,'2025-05-11'),(2,3,'ALQUILER','Alquiler local ONG abril',600.00,'2025-05-11'),(3,3,'SUMINISTROS','Compra de material educativo',180.00,'2025-05-11'),(4,3,'SUMINISTROS','Compra de material educativo',200.00,'2025-05-12'),(5,3,'TRANSPORTE','Transporte Voluntarios',45.00,'2025-05-12'),(6,3,'PERSONAL','Sueldo Coordinador IT',1200.00,'2025-05-16');
-/*!40000 ALTER TABLE `gastos` ENABLE KEYS */;
-UNLOCK TABLES;
 
 --
 -- Table structure for table `ingreso`
@@ -122,21 +132,36 @@ CREATE TABLE `ingreso` (
   `monto` decimal(38,2) DEFAULT NULL,
   `tipo` varchar(255) DEFAULT NULL,
   `id_ong` bigint DEFAULT NULL,
+  `id_usuario` bigint DEFAULT NULL,
+  `id_proyecto` bigint DEFAULT NULL,
+  `id_subvencion` bigint DEFAULT NULL,
+  `cuenta` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `FKgolop720kwilamh50jphpekkp` (`id_ong`),
-  CONSTRAINT `FKgolop720kwilamh50jphpekkp` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  KEY `FK523ha1122j3b48jdksuq9lwfx` (`id_usuario`),
+  KEY `FKt8q3octm084ngij07dxhp42x2` (`id_proyecto`),
+  KEY `FK1uhsy2fkols1muj4ullmgn42j` (`id_subvencion`),
+  CONSTRAINT `FK1uhsy2fkols1muj4ullmgn42j` FOREIGN KEY (`id_subvencion`) REFERENCES `subvenciones` (`id`) ON DELETE SET NULL,
+  CONSTRAINT `FK523ha1122j3b48jdksuq9lwfx` FOREIGN KEY (`id_usuario`) REFERENCES `usuarios` (`id`),
+  CONSTRAINT `FKgolop720kwilamh50jphpekkp` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`),
+  CONSTRAINT `FKt8q3octm084ngij07dxhp42x2` FOREIGN KEY (`id_proyecto`) REFERENCES `proyectos` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ingreso`
+-- Table structure for table `mensajes_contacto`
 --
 
-LOCK TABLES `ingreso` WRITE;
-/*!40000 ALTER TABLE `ingreso` DISABLE KEYS */;
-INSERT INTO `ingreso` VALUES (1,'Donación anónima','2025-05-11',500.00,'donaciones',NULL),(2,'Donación anónima','2025-05-11',500.00,'donaciones',3),(3,'Descripción: Subvención Ayuntamiento 2024','2025-05-11',2000.00,'subvenciones',3),(4,'Descripción: Ingreso evento “Corre por una causa”','2025-05-11',750.00,'eventos',3),(5,'Donación anónima','2025-05-12',750.00,'donaciones',3),(6,'Donación anónima','2025-05-12',750.00,'donaciones',3),(7,'Donación anónima','2025-05-12',50.00,'donaciones',3),(8,'Donacion para mis queridisimos animales','2025-05-30',500.00,'DONACIÓN',3);
-/*!40000 ALTER TABLE `ingreso` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `mensajes_contacto`;
+CREATE TABLE `mensajes_contacto` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `fecha` datetime(6) NOT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `organizacion` varchar(150) DEFAULT NULL,
+  `email` varchar(254) NOT NULL,
+  `mensaje` varchar(2000) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Table structure for table `ongs`
@@ -154,21 +179,37 @@ CREATE TABLE `ongs` (
   `email` varchar(255) DEFAULT NULL,
   `fecha_creacion` date NOT NULL,
   `id_admin` bigint DEFAULT NULL,
+  `nif` varchar(255) DEFAULT NULL,
+  `representante` varchar(255) DEFAULT NULL,
+  `firma` longtext,
+  `logo` longtext,
   PRIMARY KEY (`id`),
   KEY `id_admin` (`id_admin`),
   CONSTRAINT `ongs_ibfk_1` FOREIGN KEY (`id_admin`) REFERENCES `usuarios` (`id`) ON DELETE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `ongs`
+-- Table structure for table `proyectos`
 --
 
-LOCK TABLES `ongs` WRITE;
-/*!40000 ALTER TABLE `ongs` DISABLE KEYS */;
-INSERT INTO `ongs` VALUES (1,'ONG Esperanza',NULL,NULL,NULL,NULL,'2025-04-19',2),(2,'ONG Esperanza',NULL,NULL,NULL,NULL,'2025-04-19',3),(3,'Protección de Animales Global ','ONG internacional dedicada al rescate y protección de animales en situaciones de emergencia.','Calle Solidaridad 789','600789123','contacto@proteccionanimal.org','2025-05-04',4);
-/*!40000 ALTER TABLE `ongs` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `proyectos`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `proyectos` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `descripcion` varchar(1000) DEFAULT NULL,
+  `estado` varchar(20) NOT NULL,
+  `fecha_fin` date DEFAULT NULL,
+  `fecha_inicio` date DEFAULT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `presupuesto` decimal(38,2) DEFAULT NULL,
+  `id_ong` bigint NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FK8q7yc6flgr00ysa7qpnqk4nad` (`id_ong`),
+  CONSTRAINT `FK8q7yc6flgr00ysa7qpnqk4nad` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `reportes`
@@ -186,18 +227,36 @@ CREATE TABLE `reportes` (
   PRIMARY KEY (`id`),
   KEY `id_ong` (`id_ong`),
   CONSTRAINT `reportes_ibfk_1` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `reportes`
+-- Table structure for table `subvenciones`
 --
 
-LOCK TABLES `reportes` WRITE;
-/*!40000 ALTER TABLE `reportes` DISABLE KEYS */;
-INSERT INTO `reportes` VALUES (1,3,'estado_resultados','2025-05-17 13:25:00','Este es un reporte de ejemplo generado manualmente.'),(2,3,'balance_general','2025-05-17 13:30:27','{activos=4800.0, pasivos=0, fondosNetos=1375.0}'),(3,3,'balance_general','2025-05-17 13:30:27','{activos=4800.0, pasivos=0, fondosNetos=1375.0}'),(4,3,'estado_resultados','2025-05-17 13:30:46','{ingresos={donaciones=2050.0, subvenciones=2000.0, eventos=750.0}, totalGastos=3425.0, totalIngresos=4800.0, resultadoNeto=1375.0, gastos={PERSONAL=2400.0, ALQUILER=600.0, SUMINISTROS=380.0, TRANSPORTE=45.0}}'),(5,3,'estado_resultados','2025-05-17 13:30:46','{ingresos={donaciones=2050.0, subvenciones=2000.0, eventos=750.0}, totalGastos=3425.0, totalIngresos=4800.0, resultadoNeto=1375.0, gastos={PERSONAL=2400.0, ALQUILER=600.0, SUMINISTROS=380.0, TRANSPORTE=45.0}}'),(6,3,'balance_general','2025-05-17 13:50:26','{activos=4800.0, pasivos=0, fondosNetos=1375.0}'),(7,3,'balance_general','2025-05-17 13:50:26','{activos=4800.0, pasivos=0, fondosNetos=1375.0}'),(8,3,'estado_resultados','2025-05-17 14:47:51','{\"ingresos\":{\"donaciones\":2050,\"subvenciones\":2000,\"eventos\":750},\"gastos\":{\"PERSONAL\":2400,\"ALQUILER\":600,\"SUMINISTROS\":380,\"TRANSPORTE\":45},\"totalIngresos\":4800,\"totalGastos\":3425,\"resultadoNeto\":1375}'),(9,3,'balance_general','2025-05-17 14:53:10','{\"activos\":4800,\"pasivos\":0,\"fondosNetos\":1375}'),(10,3,'balance_general','2025-05-29 22:58:06','{activos=4800.0, pasivos=0, fondosNetos=1375.0}'),(11,3,'estado_resultados','2025-05-29 23:04:01','{ingresos={donaciones=2050.0, subvenciones=2000.0, eventos=750.0}, totalGastos=3425.0, totalIngresos=4800.0, resultadoNeto=1375.0, gastos={PERSONAL=2400.0, ALQUILER=600.0, SUMINISTROS=380.0, TRANSPORTE=45.0}}'),(12,3,'balance_general','2025-05-30 17:42:28','{activos=4800.0, pasivos=0, fondosNetos=1375.0}');
-/*!40000 ALTER TABLE `reportes` ENABLE KEYS */;
-UNLOCK TABLES;
+DROP TABLE IF EXISTS `subvenciones`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `subvenciones` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `estado` varchar(20) NOT NULL,
+  `expediente` varchar(60) DEFAULT NULL,
+  `fecha_concesion` date DEFAULT NULL,
+  `fecha_justificacion` date DEFAULT NULL,
+  `fecha_solicitud` date DEFAULT NULL,
+  `financiador` varchar(150) DEFAULT NULL,
+  `importe_concedido` decimal(38,2) DEFAULT NULL,
+  `importe_solicitado` decimal(38,2) DEFAULT NULL,
+  `nombre` varchar(150) NOT NULL,
+  `id_ong` bigint NOT NULL,
+  `id_proyecto` bigint DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `FKdtshpvrcmkotpf3p68prggo2v` (`id_ong`),
+  KEY `FKkmxygdwxay4oc3yvoym68h5xh` (`id_proyecto`),
+  CONSTRAINT `FKdtshpvrcmkotpf3p68prggo2v` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`),
+  CONSTRAINT `FKkmxygdwxay4oc3yvoym68h5xh` FOREIGN KEY (`id_proyecto`) REFERENCES `proyectos` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
 --
 -- Table structure for table `usuarios`
@@ -216,22 +275,18 @@ CREATE TABLE `usuarios` (
   `nif_cif` varchar(255) DEFAULT NULL,
   `creado_en` date NOT NULL,
   `id_ong` bigint DEFAULT NULL,
+  `direccion` varchar(255) DEFAULT NULL,
+  `codigo_postal` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`),
   KEY `FKn9ymjumrloq9actfc632lkndy` (`id_ong`),
   CONSTRAINT `FKn9ymjumrloq9actfc632lkndy` FOREIGN KEY (`id_ong`) REFERENCES `ongs` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `usuarios`
+-- Dumping routines for database 'tfg_ong'
 --
-
-LOCK TABLES `usuarios` WRITE;
-/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
-INSERT INTO `usuarios` VALUES (2,'Juan Admin','juan@admin.com','123456','ADMIN','600123123','12345678A','2025-04-19',NULL),(3,'Ana Garcíados','anasda@ejemplo.com','123456','ADMIN','1232456789','123425678A','2025-04-19',NULL),(4,'Admin General','admin@example.com','password123','ADMIN','123456789','X1234567Y','2025-04-28',NULL),(5,'Pepe Rodríguez','pepe@example.com','password123','VOLUNTARIO','600654321','12345678A','2025-05-04',3);
-/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
-UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -242,4 +297,3 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-30 22:29:11

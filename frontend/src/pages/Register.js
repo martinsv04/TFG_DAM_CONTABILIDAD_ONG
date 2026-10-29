@@ -1,24 +1,35 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Logo from '../components/Logo';
 import Icon from '../components/Icons';
 import { toast } from '../components/Toast';
 import '../styles/public.css';
 
-const VACIO = { nombre: '', empresa: '', email: '', mensaje: '' };
+const VACIO = { nombre: '', empresa: '', email: '', mensaje: '', web: '' }; // «web» es una trampa para bots: debe quedar vacío
 
 const Register = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState(VACIO);
+  const [acepta, setAcepta] = useState(false);
+  const [enviando, setEnviando] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Formulario enviado:', formData);
-    toast('¡Tu mensaje ha sido enviado!', 'success');
-    setFormData(VACIO);
+    setEnviando(true);
+    try {
+      await axios.post('http://localhost:8080/api/contacto', formData);
+      navigate('/gracias?motivo=contacto');
+    } catch (error) {
+      console.error('Error al enviar el mensaje:', error);
+      toast(error.response?.data?.message || 'No se pudo enviar el mensaje. Inténtalo de nuevo en unos minutos.', 'error');
+    } finally {
+      setEnviando(false);
+    }
   };
 
   return (
@@ -60,10 +71,23 @@ const Register = () => {
 
             <div className="field">
               <label htmlFor="mensaje">Mensaje</label>
-              <textarea id="mensaje" name="mensaje" rows="4" value={formData.mensaje} onChange={handleChange} />
+              <textarea id="mensaje" name="mensaje" rows="4" maxLength="2000" value={formData.mensaje} onChange={handleChange} required />
             </div>
 
-            <button type="submit" className="btn btn-primary btn-lg btn-block">Enviar mensaje</button>
+            {/* Campo oculto para personas: solo los bots lo rellenan */}
+            <div className="campo-trampa" aria-hidden="true">
+              <label htmlFor="web">No rellenar</label>
+              <input id="web" type="text" name="web" tabIndex="-1" autoComplete="off" value={formData.web} onChange={handleChange} />
+            </div>
+
+            <label className="check-legal">
+              <input type="checkbox" checked={acepta} onChange={(e) => setAcepta(e.target.checked)} required />
+              <span>He leído y acepto la <Link to="/privacidad" target="_blank">política de privacidad</Link>.</span>
+            </label>
+
+            <button type="submit" className="btn btn-primary btn-lg btn-block" disabled={enviando || !acepta}>
+              {enviando ? 'Enviando...' : 'Enviar mensaje'}
+            </button>
           </form>
 
           <p className="auth-pie">¿Ya tienes cuenta? <Link to="/iniciar-sesion">Iniciar sesión</Link></p>

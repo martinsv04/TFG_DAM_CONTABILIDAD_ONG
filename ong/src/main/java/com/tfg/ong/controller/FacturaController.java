@@ -7,10 +7,11 @@ import com.tfg.ong.model.Factura;
 import com.tfg.ong.repository.FacturaRepository;
 import com.tfg.ong.service.FacturaService;
 
-import org.springframework.http.MediaType;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -82,8 +83,8 @@ public class FacturaController {
         
     }
 
-    /** Cuerpo para generar una factura: tipo ("INGRESO" o "GASTO") y el id del movimiento. */
-    public record FacturaDeMovimiento(String tipo, Long movimientoId) {}
+    /** Cuerpo para generar una factura: tipo ("INGRESO" o "GASTO"), id del movimiento e IVA en % (opcional, 0 por defecto). */
+    public record FacturaDeMovimiento(String tipo, Long movimientoId, BigDecimal iva) {}
 
     @PostMapping("/ong/{idOng}/generar")
     public ResponseEntity<?> generarFactura(@PathVariable Long idOng, @RequestBody FacturaDeMovimiento body,
@@ -91,10 +92,13 @@ public class FacturaController {
         ongAccess.verificarOng(caller, idOng);
 
         try {
-            Factura creada = facturaService.generarDesdeMovimiento(idOng, body.tipo(), body.movimientoId());
+            Factura creada = facturaService.generarDesdeMovimiento(idOng, body.tipo(), body.movimientoId(), body.iva());
             return ResponseEntity.ok(Map.of("id", creada.getId(), "numero", creada.getNumero(), "total", creada.getTotal()));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("message", e.getMessage()));
+        } catch (DataIntegrityViolationException e) {
+            // Dos facturas generadas a la vez pueden pedir el mismo número: la restricción única lo impide
+            return ResponseEntity.badRequest().body(Map.of("message", "No se pudo asignar el número de factura. Inténtalo de nuevo."));
         }
     }
 

@@ -30,6 +30,8 @@ public class Usuario {
    
     private String telefono;
     private String nifCif;
+    private String direccion;
+    private String codigoPostal;
 
     @Column(name = "creado_en")
     private LocalDate creadoEn;
@@ -63,6 +65,12 @@ public class Usuario {
 
     public String getNifCif() {return nifCif;}
     public void setNifCif(String nifCif) {this.nifCif = nifCif;}
+
+    public String getDireccion() {return direccion;}
+    public void setDireccion(String direccion) {this.direccion = direccion;}
+
+    public String getCodigoPostal() {return codigoPostal;}
+    public void setCodigoPostal(String codigoPostal) {this.codigoPostal = codigoPostal;}
 
     public LocalDate getCreadoEn() {return creadoEn;}
     public void setCreadoEn(LocalDate creadoEn) {this.creadoEn = creadoEn;}

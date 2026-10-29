@@ -54,6 +54,7 @@ const FacturasList = () => {
                 <tr>
                   <th>Número</th>
                   <th>Origen</th>
+                  <th>Cuenta</th>
                   <th>Fecha</th>
                   <th>Emitida por</th>
                   <th className="num">Total</th>
@@ -72,6 +73,7 @@ const FacturasList = () => {
                         <span className="text-muted">—</span>
                       )}
                     </td>
+                    <td>{(factura.ingreso || factura.gasto)?.cuenta ? <span className="badge">{(factura.ingreso || factura.gasto).cuenta}</span> : <span className="text-muted">—</span>}</td>
                     <td className="text-muted">{formatoFecha(factura.fecha)}</td>
                     <td>{factura.usuario ? factura.usuario.nombre : <span className="badge">Anónimo</span>}</td>
                     <td className="num"><strong>{formatoEuro(factura.total)}</strong></td>

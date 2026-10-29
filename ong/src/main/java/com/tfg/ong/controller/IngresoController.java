@@ -4,6 +4,8 @@ import com.tfg.ong.security.OngAccessService;
 import org.springframework.security.access.AccessDeniedException;
 import com.tfg.ong.model.Ingreso;
 import com.tfg.ong.model.Ong;
+import com.tfg.ong.model.Proyecto;
+import com.tfg.ong.model.Subvencion;
 import com.tfg.ong.model.Rol;
 import com.tfg.ong.model.Usuario;
 import com.tfg.ong.repository.IngresoRepository;
@@ -55,11 +57,14 @@ public class IngresoController {
     }
 
     @PutMapping("/{id}")
-    public Ingreso updateIngresos(@PathVariable Long id, @RequestBody Ingreso ingreso, @AuthenticationPrincipal AuthUser caller) {
+    public ResponseEntity<Object> updateIngresos(@PathVariable Long id, @RequestBody Ingreso ingreso, @AuthenticationPrincipal AuthUser caller) {
         ongAccess.verificarIngreso(caller, id);
 
-
-        return ingresoService.updateIngresos(id, ingreso);
+        try {
+            return ResponseEntity.ok(ingresoService.updateIngresos(id, ingreso));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", String.valueOf(e.getMessage())));
+        }
 
     }
 
@@ -116,12 +121,28 @@ public class IngresoController {
             ingreso.setTipo(tipo);
             ingreso.setFecha(LocalDate.parse(fechaStr));
             ingreso.setOng(ong);
+            if (payload.get("cuenta") != null && !(caller != null && caller.rol() == Rol.DONANTE)) {
+                ingreso.setCuenta(payload.get("cuenta").toString());
+            }
 
             // Quién hizo el ingreso (p. ej. el donante); se copia a la factura al generarla
             if (idUsuario != null) {
                 Usuario donante = new Usuario();
                 donante.setId(idUsuario);
                 ingreso.setUsuario(donante);
+            }
+
+            // Proyecto y subvención opcionales (el donante no los elige); se comprueba que sean de esta ONG al guardar
+            boolean esDonante = caller != null && caller.rol() == Rol.DONANTE;
+            if (!esDonante && payload.get("id_proyecto") != null && !payload.get("id_proyecto").toString().isBlank()) {
+                Proyecto proyecto = new Proyecto();
+                proyecto.setId(Long.parseLong(payload.get("id_proyecto").toString()));
+                ingreso.setProyecto(proyecto);
+            }
+            if (!esDonante && payload.get("id_subvencion") != null && !payload.get("id_subvencion").toString().isBlank()) {
+                Subvencion subvencion = new Subvencion();
+                subvencion.setId(Long.parseLong(payload.get("id_subvencion").toString()));
+                ingreso.setSubvencion(subvencion);
             }
 
             Ingreso ingresoGuardado = ingresoService.createIngreso(ingreso);
@@ -134,6 +155,8 @@ public class IngresoController {
 
         } catch (AccessDeniedException e) {
             throw e;
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("message", String.valueOf(e.getMessage())));
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.badRequest().build();

@@ -16,6 +16,8 @@ const AddMember = () => {
     rol: 'VOLUNTARIO',
     telefono: '',
     nifCif: '',
+    direccion: '',
+    codigoPostal: '',
   });
 
   const handleChange = (e) => {
@@ -81,6 +83,17 @@ const AddMember = () => {
           <div className="field">
             <label htmlFor="nifCif">NIF/CIF</label>
             <input id="nifCif" type="text" name="nifCif" value={memberData.nifCif} onChange={handleChange} />
+          </div>
+
+          <div className="field">
+            <label htmlFor="codigoPostal">Código postal</label>
+            <input id="codigoPostal" type="text" name="codigoPostal" inputMode="numeric" maxLength={5} value={memberData.codigoPostal} onChange={handleChange} />
+          </div>
+
+          <div className="field span-2">
+            <label htmlFor="direccion">Dirección postal</label>
+            <input id="direccion" type="text" name="direccion" value={memberData.direccion} onChange={handleChange} />
+            <span className="hint">NIF y dirección son necesarios para emitir certificados de donación a un donante.</span>
           </div>
         </div>
 

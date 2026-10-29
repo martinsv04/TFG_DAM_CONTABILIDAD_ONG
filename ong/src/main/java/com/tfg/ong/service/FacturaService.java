@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -23,6 +23,9 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class FacturaService {
+
+    /** Tipos de IVA que se pueden aplicar (en %). El 0 sirve para operaciones exentas o no sujetas. */
+    public static final Set<Integer> TIPOS_IVA = Set.of(0, 4, 10, 21);
 
     private final FacturaRepository facturaRepository;
 
@@ -62,13 +65,40 @@ public class FacturaService {
 
 
     /**
+     * Siguiente número de factura de una serie: «F-AAAA-NNNN» para los ingresos y «G-AAAA-NNNN» para los gastos,
+     * correlativo dentro de cada ONG y año (las facturas deben numerarse sin saltos dentro de cada serie).
+     */
+    String siguienteNumero(Long idOng, String letra, int anio) {
+        String prefijo = letra + "-" + anio + "-";
+        int maximo = 0;
+        for (String numero : facturaRepository.findNumerosByOngIdAndPrefijo(idOng, prefijo)) {
+            String resto = numero.substring(prefijo.length());
+            if (resto.matches("\\d{1,9}")) {
+                maximo = Math.max(maximo, Integer.parseInt(resto));
+            }
+        }
+        return prefijo + String.format("%04d", maximo + 1);
+    }
+
+    /** Genera la factura sin IVA (0 %). */
+    public Factura generarDesdeMovimiento(Long idOng, String tipo, Long idMovimiento) {
+        return generarDesdeMovimiento(idOng, tipo, idMovimiento, null);
+    }
+
+    /**
      * Genera la factura de un movimiento (ingreso o gasto) ya registrado.
      * El número, la fecha y el importe los fija el servidor a partir del propio movimiento.
+     * El importe del movimiento se entiende con el IVA incluido: la base imponible se calcula quitándolo.
      *
      * @param tipo "INGRESO" o "GASTO"
+     * @param iva  tipo de IVA en % (0, 4, 10 o 21); si es null se usa 0
      */
     @Transactional
-    public Factura generarDesdeMovimiento(Long idOng, String tipo, Long idMovimiento) {
+    public Factura generarDesdeMovimiento(Long idOng, String tipo, Long idMovimiento, BigDecimal iva) {
+        BigDecimal tipoIva = iva == null ? BigDecimal.ZERO : iva;
+        if (tipoIva.stripTrailingZeros().scale() > 0 || !TIPOS_IVA.contains(tipoIva.intValue())) {
+            throw new IllegalArgumentException("El IVA debe ser 0, 4, 10 o 21 %");
+        }
         if (tipo == null || idMovimiento == null) {
             throw new IllegalArgumentException("Hay que indicar el tipo de movimiento y cuál es");
         }
@@ -77,7 +107,7 @@ public class FacturaService {
         Ong ong;
         BigDecimal monto;
         String descripcion;
-        String prefijo;
+        String letra;
 
         switch (tipo.toUpperCase()) {
             case "INGRESO" -> {
@@ -94,7 +124,7 @@ public class FacturaService {
                 ong = ingreso.getOng();
                 monto = ingreso.getMonto();
                 descripcion = ingreso.getDescripcion();
-                prefijo = "F-";
+                letra = "F";
             }
             case "GASTO" -> {
                 Gasto gasto = gastoRepository.findById(idMovimiento)
@@ -109,7 +139,7 @@ public class FacturaService {
                 ong = gasto.getOng();
                 monto = gasto.getMonto();
                 descripcion = gasto.getDescripcion();
-                prefijo = "G-";
+                letra = "G";
             }
             default -> throw new IllegalArgumentException("El tipo debe ser INGRESO o GASTO");
         }
@@ -118,17 +148,22 @@ public class FacturaService {
             throw new IllegalArgumentException("El movimiento no tiene importe");
         }
 
-        factura.setNumero(prefijo + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-        factura.setFecha(LocalDate.now());
+        LocalDate hoy = LocalDate.now();
+        BigDecimal total = monto.setScale(2, RoundingMode.HALF_UP);
+        BigDecimal divisor = BigDecimal.ONE.add(tipoIva.movePointLeft(2));
+        BigDecimal base = total.divide(divisor, 2, RoundingMode.HALF_UP);
+
+        factura.setNumero(siguienteNumero(idOng, letra, hoy.getYear()));
+        factura.setFecha(hoy);
         factura.setOng(ong);
-        factura.setTotal(monto.setScale(2, RoundingMode.HALF_UP));
+        factura.setTotal(total);
 
         DetalleFactura detalle = new DetalleFactura();
         detalle.setFactura(factura);
         detalle.setDescripcion(descripcion == null || descripcion.isBlank() ? "Sin descripción" : descripcion);
         detalle.setCantidad(1);
-        detalle.setPrecio(monto);
-        detalle.setIva(BigDecimal.ZERO);
+        detalle.setPrecio(base);
+        detalle.setIva(tipoIva.setScale(2, RoundingMode.HALF_UP));
         factura.setDetalles(new ArrayList<>(List.of(detalle)));
 
         return facturaRepository.save(factura);

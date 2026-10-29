@@ -1,5 +1,7 @@
 package com.tfg.ong.model;
 
+import org.hibernate.Length;
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -27,12 +29,26 @@ public class Ong {
 
     private String email;
 
+    // Datos fiscales de la entidad (aparecen en los certificados de donación)
+    private String nif;
+
+    private String representante;
+
+    // Imágenes para los certificados (data URL en base64). No se envían con los datos de la ONG: tienen sus propios endpoints.
+    @JsonIgnore
+    @Column(length = Length.LONG32)
+    private String logo;
+
+    @JsonIgnore
+    @Column(length = Length.LONG32)
+    private String firma;
+
     @Column(name = "fecha_creacion", nullable = false)
     private LocalDate fechaCreacion;
 
 
     // Del administrador solo se envían id y nombre (sin email, teléfono, NIF/CIF, etc.)
-    @JsonIgnoreProperties({"email", "telefono", "nifCif", "creadoEn", "ong", "rol"})
+    @JsonIgnoreProperties({"email", "telefono", "nifCif", "direccion", "codigoPostal", "creadoEn", "ong", "rol"})
     @ManyToOne
     @JoinColumn(name = "id_admin")
     private Usuario admin;
@@ -74,6 +90,18 @@ public class Ong {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getNif() { return nif; }
+    public void setNif(String nif) { this.nif = nif; }
+
+    public String getRepresentante() { return representante; }
+    public void setRepresentante(String representante) { this.representante = representante; }
+
+    public String getLogo() { return logo; }
+    public void setLogo(String logo) { this.logo = logo; }
+
+    public String getFirma() { return firma; }
+    public void setFirma(String firma) { this.firma = firma; }
 
     public LocalDate getFechaCreacion() { return fechaCreacion; }
     public void setFechaCreacion(LocalDate fechaCreacion) { this.fechaCreacion = fechaCreacion; }

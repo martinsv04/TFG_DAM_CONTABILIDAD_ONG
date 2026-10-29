@@ -126,4 +126,21 @@ public class AuthControllerTest {
                         .content(objectMapper.writeValueAsString(loginRequest)))
                 .andExpect(status().isUnauthorized());
     }
+
+    @Test
+    public void testLoginSeBloqueaTrasVariosFallos() throws Exception {
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setEmail("bloqueo@example.com");
+        loginRequest.setPassword("incorrecta");
+        when(usuarioRepository.findByEmail("bloqueo@example.com")).thenReturn(Optional.empty());
+        String cuerpo = objectMapper.writeValueAsString(loginRequest);
+
+        for (int i = 0; i < 5; i++) {
+            mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(cuerpo))
+                    .andExpect(status().isUnauthorized());
+        }
+        mockMvc.perform(post("/api/auth/login").contentType(MediaType.APPLICATION_JSON).content(cuerpo))
+                .andExpect(status().isTooManyRequests())
+                .andExpect(header().exists("Retry-After"));
+    }
 }

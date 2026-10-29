@@ -1,3 +1,18 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+# Zonas con sesión: no tienen contenido público
+Disallow: /dashboard
+Disallow: /ong/
+Disallow: /ongs/
+Disallow: /editar-ong/
+Disallow: /add-member/
+Disallow: /area-economica/
+Disallow: /informe/
+Disallow: /facturas/
+Disallow: /donar/
+Disallow: /perfil
+Disallow: /gracias
+
+# [COMPLETAR] cambia el dominio por el definitivo (el mismo que en src/config/sitio.js)
+Sitemap: https://ongestion.example/sitemap.xml

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Icon from '../components/Icons';
 import { toast } from '../components/Toast';
@@ -13,6 +13,15 @@ const Donar = () => {
   const [descripcion, setDescripcion] = useState('');
   const [anonimo, setAnonimo] = useState(false);
   const [enviando, setEnviando] = useState(false);
+  const [perfilIncompleto, setPerfilIncompleto] = useState(false);
+
+  // Para el certificado de donación hacen falta el NIF y la dirección del donante
+  useEffect(() => {
+    axios
+      .get('http://localhost:8080/api/perfil')
+      .then((res) => setPerfilIncompleto(!res.data.nifCif || !res.data.direccion))
+      .catch(() => {});
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,8 +40,7 @@ const Donar = () => {
       await axios.post('http://localhost:8080/api/ingresos', payload, {
         headers: { 'Content-Type': 'application/json' },
       });
-      toast('¡Gracias por tu donación!', 'success');
-      navigate(`/ong/${id}`);
+      navigate(`/gracias?motivo=donacion&ong=${id}`);
     } catch (error) {
       console.error('Error al registrar la donación:', error);
       toast('No se pudo completar la donación', 'error');
@@ -48,6 +56,15 @@ const Donar = () => {
         <h1>Haz una donación</h1>
         <p className="page-sub">Tu aportación ayuda a que esta organización siga adelante.</p>
       </div>
+
+      {perfilIncompleto && !anonimo && (
+        <div className="alert alert-warn" role="status">
+          <Icon name="info" size={18} />
+          <span>
+            Para recibir tu certificado de donación necesitamos tu NIF y tu dirección. <Link to="/perfil">Completa tu perfil</Link>.
+          </span>
+        </div>
+      )}
 
       <form className="card card-pad form" onSubmit={handleSubmit}>
         <div className="field">
@@ -81,7 +98,7 @@ const Donar = () => {
           <span className="interruptor-pista" aria-hidden="true" />
           <span>
             <strong>Donar de forma anónima</strong>
-            <small>Tu nombre no aparecerá en la factura.</small>
+            <small>Tu nombre no aparecerá en la factura y no se podrá emitir certificado de donación.</small>
           </span>
         </label>
 

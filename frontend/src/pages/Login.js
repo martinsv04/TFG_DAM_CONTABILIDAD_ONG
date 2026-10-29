@@ -32,10 +32,13 @@ const Login = () => {
       navigate('/dashboard');
     } catch (err) {
       console.error('Error en login:', err.response ? err.response.data : err.message);
+      const estado = err.response && err.response.status;
       setError(
-        err.response && err.response.status === 401
+        estado === 401
           ? 'Correo o contraseña incorrectos.'
-          : 'No se pudo conectar con el servidor. Inténtalo de nuevo en unos segundos.'
+          : estado === 429
+            ? err.response.data?.message || 'Demasiados intentos fallidos. Espera unos minutos.'
+            : 'No se pudo conectar con el servidor. Inténtalo de nuevo en unos segundos.'
       );
     } finally {
       setEnviando(false);

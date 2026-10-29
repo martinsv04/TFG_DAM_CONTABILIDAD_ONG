@@ -62,6 +62,15 @@ public class UsuarioService {
     }
 
 
+    /** Cambia la contraseña de un usuario (restablecimiento por el administrador). */
+    public void cambiarPassword(Long id, String nueva) {
+        PoliticaPassword.validar(nueva);
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        usuario.setPassword(passwordEncoder.encode(nueva));
+        usuarioRepository.save(usuario);
+    }
+
     public void deleteUsuario(Long id) {
         usuarioRepository.deleteById(id);
     }

@@ -8,6 +8,9 @@ import { toast } from '../components/Toast';
 import { formatoEuro, formatoFecha } from '../utils/format';
 
 const API = 'http://localhost:8080/api';
+const TIPOS_IVA = [0, 4, 10, 21];
+
+const redondear = (n) => Math.round((n + Number.EPSILON) * 100) / 100;
 
 const NuevaFactura = () => {
   const { id } = useParams(); // ID de la ONG
@@ -20,6 +23,8 @@ const NuevaFactura = () => {
   const [datos, setDatos] = useState(null);
   const [error, setError] = useState('');
   const [enviando, setEnviando] = useState(false);
+  // Los gastos suelen llevar IVA general; los ingresos de una ONG (donaciones, cuotas) suelen no estar sujetos
+  const [iva, setIva] = useState(params.get('tipo') === 'gasto' ? 21 : 0);
 
   useEffect(() => {
     Promise.all([
@@ -53,9 +58,15 @@ const NuevaFactura = () => {
 
   const elegido = disponibles.find((m) => m.id === seleccionado) || null;
 
+  // El importe del movimiento lleva el IVA incluido
+  const total = elegido ? Number(elegido.monto) : 0;
+  const base = redondear(total / (1 + iva / 100));
+  const cuota = redondear(total - base);
+
   const cambiarTipo = (nuevo) => {
     if (nuevo === tipo) return;
     setTipo(nuevo);
+    setIva(nuevo === 'GASTO' ? 21 : 0);
     setSeleccionado(null);
     setError('');
   };
@@ -65,7 +76,7 @@ const NuevaFactura = () => {
     setError('');
     setEnviando(true);
     try {
-      const res = await axios.post(`${API}/facturas/ong/${id}/generar`, { tipo, movimientoId: elegido.id });
+      const res = await axios.post(`${API}/facturas/ong/${id}/generar`, { tipo, movimientoId: elegido.id, iva });
       toast(`Factura ${res.data.numero} generada`, 'success');
       navigate(`/facturas/${res.data.id}`);
     } catch (err) {
@@ -118,13 +129,30 @@ const NuevaFactura = () => {
                   <span className="movimiento-info">
                     <strong>{m.descripcion || 'Sin descripción'}</strong>
                     <small>
-                      {formatoFecha(m.fecha)} · {tipo === 'INGRESO' ? m.tipo : m.categoria}
+                      {formatoFecha(m.fecha)} · {tipo === 'INGRESO' ? m.tipo : m.categoria}{m.cuenta ? ` · cuenta ${m.cuenta}` : ''}{m.proyecto ? ` · ${m.proyecto.nombre}` : ''}
                     </small>
                   </span>
                   <span className="movimiento-importe">{formatoEuro(m.monto)}</span>
                 </button>
               ))}
             </div>
+          )}
+        </div>
+
+        <div className="field">
+          <label className="label" htmlFor="iva-factura">IVA</label>
+          <select id="iva-factura" value={iva} onChange={(e) => setIva(Number(e.target.value))}>
+            {TIPOS_IVA.map((t) => (
+              <option key={t} value={t}>{t === 0 ? 'Sin IVA (exento o no sujeto) · 0 %' : `${t} %`}</option>
+            ))}
+          </select>
+          <small className="text-muted">
+            El importe del movimiento se considera con el IVA incluido. Las donaciones y cuotas de socios no llevan IVA.
+          </small>
+          {elegido && iva > 0 && (
+            <p className="text-muted">
+              Base imponible {formatoEuro(base)} + IVA {formatoEuro(cuota)} = <strong>{formatoEuro(total)}</strong>
+            </p>
           )}
         </div>
 

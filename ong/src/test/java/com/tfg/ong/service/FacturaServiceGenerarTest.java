@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -73,7 +74,7 @@ class FacturaServiceGenerarTest {
         assertSame(i, f.getIngreso());
         assertNull(f.getGasto());
         assertEquals(new BigDecimal("150.50"), f.getTotal());
-        assertTrue(f.getNumero().startsWith("F-"));
+        assertEquals("F-" + LocalDate.now().getYear() + "-0001", f.getNumero());
         assertEquals(1, f.getDetalles().size());
         assertEquals("Donación campaña", f.getDetalles().get(0).getDescripcion());
         assertSame(f, f.getDetalles().get(0).getFactura());
@@ -91,7 +92,53 @@ class FacturaServiceGenerarTest {
         assertSame(g, f.getGasto());
         assertNull(f.getIngreso());
         assertEquals(new BigDecimal("40.00"), f.getTotal());
-        assertTrue(f.getNumero().startsWith("G-"));
+        assertEquals("G-" + LocalDate.now().getYear() + "-0001", f.getNumero());
+    }
+
+    @Test
+    void numeraCorrelativamenteDentroDeLaSerieYElAnio() {
+        int anio = LocalDate.now().getYear();
+        when(gastoRepository.findById(3L)).thenReturn(Optional.of(gasto(3L, 1L)));
+        when(facturaRepository.findNumerosByOngIdAndPrefijo(1L, "G-" + anio + "-"))
+                .thenReturn(List.of("G-" + anio + "-0001", "G-" + anio + "-0009", "G-" + anio + "-0002", "G-" + anio + "-ABC"));
+        when(facturaRepository.save(any(Factura.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Factura f = facturaService.generarDesdeMovimiento(1L, "GASTO", 3L);
+
+        assertEquals("G-" + anio + "-0010", f.getNumero());
+    }
+
+    @Test
+    void quitaElIvaIncluidoDelImporte() {
+        when(gastoRepository.findById(3L)).thenReturn(Optional.of(gasto(3L, 1L)));
+        when(facturaRepository.save(any(Factura.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Factura f = facturaService.generarDesdeMovimiento(1L, "GASTO", 3L, new BigDecimal("21"));
+
+        // 40,00 € con IVA incluido: base 33,06 € y cuota 6,94 €
+        assertEquals(new BigDecimal("40.00"), f.getTotal());
+        assertEquals(new BigDecimal("33.06"), f.getDetalles().get(0).getPrecio());
+        assertEquals(0, new BigDecimal("21").compareTo(f.getDetalles().get(0).getIva()));
+    }
+
+    @Test
+    void sinIvaLaBaseEsElTotal() {
+        when(gastoRepository.findById(3L)).thenReturn(Optional.of(gasto(3L, 1L)));
+        when(facturaRepository.save(any(Factura.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Factura f = facturaService.generarDesdeMovimiento(1L, "GASTO", 3L, null);
+
+        assertEquals(new BigDecimal("40.00"), f.getDetalles().get(0).getPrecio());
+        assertEquals(0, BigDecimal.ZERO.compareTo(f.getDetalles().get(0).getIva()));
+    }
+
+    @Test
+    void rechazaUnIvaNoPermitido() {
+        assertThrows(IllegalArgumentException.class,
+                () -> facturaService.generarDesdeMovimiento(1L, "GASTO", 3L, new BigDecimal("19")));
+        assertThrows(IllegalArgumentException.class,
+                () -> facturaService.generarDesdeMovimiento(1L, "GASTO", 3L, new BigDecimal("10.5")));
+        verify(facturaRepository, never()).save(any());
     }
 
     @Test

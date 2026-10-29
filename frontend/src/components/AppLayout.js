@@ -100,18 +100,30 @@ function AppLayout() {
               {puedeVerEconomia && (
                 <>
                   <Enlace to={`/area-economica/${ongId}`} icono="wallet">Área económica</Enlace>
+                  <Enlace to={`/ongs/${ongId}/proyectos`} icono="folder">Proyectos</Enlace>
+                  <Enlace to={`/ongs/${ongId}/subvenciones`} icono="landmark">Subvenciones</Enlace>
                   <Enlace to={`/ongs/${ongId}/facturas`} icono="file-text">Facturas</Enlace>
+                  <Enlace to={`/ongs/${ongId}/certificados`} icono="award">Certificados</Enlace>
+                  <Enlace to={`/ongs/${ongId}/modelo-182`} icono="briefcase">Modelo 182</Enlace>
+                  <Enlace to={`/ongs/${ongId}/exportar`} icono="download">Exportar datos</Enlace>
                   <Enlace to={`/informe/balance/${ongId}`} icono="pie-chart">Balance general</Enlace>
                   <Enlace to={`/informe/resultados/${ongId}`} icono="bar-chart">Estado de resultados</Enlace>
+                  <Enlace to={`/ongs/${ongId}/cuentas`} icono="book">Resumen por cuenta</Enlace>
                 </>
               )}
 
-              {rol === 'DONANTE' && <Enlace to={`/donar/${ongId}`} icono="heart">Hacer una donación</Enlace>}
+              {rol === 'DONANTE' && (
+                <>
+                  <Enlace to={`/donar/${ongId}`} icono="heart">Hacer una donación</Enlace>
+                  <Enlace to={`/ongs/${ongId}/mis-certificados`} icono="award">Mis certificados</Enlace>
+                </>
+              )}
 
               {rol === 'ADMIN' && (
                 <>
                   <Enlace to={`/add-member/${ongId}`} icono="user-plus">Añadir miembro</Enlace>
                   <Enlace to={`/editar-ong/${ongId}`} icono="edit">Editar ONG</Enlace>
+                  <Enlace to={`/ongs/${ongId}/auditoria`} icono="shield">Registro de actividad</Enlace>
                 </>
               )}
             </>
@@ -119,13 +131,13 @@ function AppLayout() {
         </nav>
 
         <div className="sidebar-bottom">
-          <div className="usuario-chip">
+          <NavLink to="/perfil" className={({ isActive }) => `usuario-chip usuario-chip-enlace${isActive ? ' active' : ''}`} title="Mi perfil">
             <span className="avatar avatar-round">{(rol || '?')[0]}</span>
             <div>
               <p className="usuario-rol">{ETIQUETA_ROL[rol] || 'Usuario'}</p>
-              <p className="usuario-sub">Sesión iniciada</p>
+              <p className="usuario-sub">Mi perfil</p>
             </div>
-          </div>
+          </NavLink>
           <button type="button" className="nav-link nav-salir" onClick={cerrar}>
             <Icon name="log-out" size={19} />
             <span>Cerrar sesión</span>
