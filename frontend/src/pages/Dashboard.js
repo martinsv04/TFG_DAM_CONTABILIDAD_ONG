@@ -38,6 +38,13 @@ const Dashboard = () => {
         eyebrow={ETIQUETA_ROL[rol] || 'Panel'}
         titulo="Tus organizaciones"
         subtitulo="Elige una ONG para ver su equipo, sus cuentas y sus informes."
+        acciones={
+          rol === 'ADMIN' && (
+            <button type="button" className="btn btn-primary" onClick={() => navigate('/nueva-ong')}>
+              <Icon name="plus" size={16} /> Nueva ONG
+            </button>
+          )
+        }
       />
 
       {cargando ? (
@@ -47,7 +54,18 @@ const Dashboard = () => {
           <EstadoVacio
             icono="briefcase"
             titulo="Todavía no tienes ninguna ONG"
-            texto="Cuando un administrador te añada a una organización aparecerá aquí."
+            texto={
+              rol === 'ADMIN'
+                ? 'Crea tu primera organización para empezar a registrar ingresos, gastos y facturas.'
+                : 'Cuando un administrador te añada a una organización aparecerá aquí.'
+            }
+            accion={
+              rol === 'ADMIN' && (
+                <button type="button" className="btn btn-primary" onClick={() => navigate('/nueva-ong')}>
+                  <Icon name="plus" size={16} /> Crear mi primera ONG
+                </button>
+              )
+            }
           />
         </div>
       ) : (

@@ -30,6 +30,7 @@ import Exportar from './pages/Exportar';
 import Auditoria from './pages/Auditoria';
 import ResumenCuentas from './pages/ResumenCuentas';
 import Perfil from './pages/Perfil';
+import NuevaOng from './pages/NuevaOng';
 import Donar from './pages/Donar';
 import Privacidad from './pages/Privacidad';
 import Terminos from './pages/Terminos';
@@ -59,6 +60,7 @@ function App() {
         <Route element={<PrivateRoute><AppLayout /></PrivateRoute>}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/ong/:id" element={<VistaOng />} />
+          <Route path="/nueva-ong" element={<PrivateRoute roles={['ADMIN']}><NuevaOng /></PrivateRoute>} />
           <Route path="/editar-ong/:id" element={<PrivateRoute roles={['ADMIN']}><EditOng /></PrivateRoute>} />
           <Route path="/add-member/:id" element={<PrivateRoute roles={['ADMIN']}><AddMember /></PrivateRoute>} />
           <Route path="/area-economica/:id" element={<PrivateRoute roles={['ADMIN', 'CONTABLE']}><EconomicArea /></PrivateRoute>} />
